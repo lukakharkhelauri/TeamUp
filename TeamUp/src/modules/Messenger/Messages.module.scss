@@ -1,0 +1,174 @@
+.messages-tab {
+  display: flex;
+  flex-direction: column;
+  background-color: #eeeeee;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 10;
+
+  @media (max-width: 768px) {
+    border-radius: 0;
+    padding: 5px;
+  }
+
+  .user-chat {
+    display: flex;
+    gap: 1.5rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border-bottom: 1px solid #ababab;
+
+    &:hover {
+      background-color: #cccccc;
+    }
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 768px) {
+      padding: 5px;
+      gap: 1rem;
+
+      img {
+        width: 40px;
+        height: 40px;
+      }
+
+      h1 {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .texts-side {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-height: 70vh;
+    max-height: 70vh;
+
+    @media (max-width: 768px) {
+      min-height: calc(100vh - 400px);
+      max-height: calc(100vh - 400px);
+      padding: 5px;
+      gap: 10px;
+    }
+
+    p {
+      display: inline-block;
+      width: auto;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 1rem;
+      color: black;
+      font-weight: 450;
+      background-color: #c0c0c0;
+
+      @media (max-width: 768px) {
+        font-size: 0.9rem;
+        padding: 3px 8px;
+      }
+    }
+
+    .person-1 {
+      display: grid;
+      justify-content: flex-end;
+
+      .sender-name {
+        background: none;
+        color: #666;
+      }
+    }
+
+    .person-2 {
+      display: grid;
+      justify-content: flex-start;
+
+      .sender-name {
+        background: none;
+        color: #666;
+      }
+    }
+  }
+
+  .message-input {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px;
+    background-color: #eeeeee;
+    border-top: 1px solid #ababab;
+
+    button {
+      padding: 8px 25px;
+      border: 1px solid #151515;
+      border-radius: 15px;
+      cursor: pointer;
+      background: #e1e1e1;
+    }
+
+    input {
+      width: 80%;
+      height: 2rem;
+      border-radius: 15px;
+      border: none;
+      padding: 10px;
+    }
+
+    @media (max-width: 768px) {
+      padding: 5px;
+      gap: 10px;
+
+      button {
+        padding: 6px 15px;
+        font-size: 0.9rem;
+      }
+
+      input {
+        width: 75%;
+        height: 1.8rem;
+      }
+    }
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.no-messages {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.timestamp {
+  font-size: 0.8em;
+  color: #666;
+  margin-top: 4px;
+  display: block;
+}
+
+.texts-side {
+  overflow-y: auto;
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
