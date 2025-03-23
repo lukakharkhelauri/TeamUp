@@ -1,29 +1,37 @@
 .filter-container {
     display: flex;
+    flex-direction: column;
     gap: 20px;
     padding: 20px;
     max-width: 1600px;
     margin: 0 auto;
-    height: calc(110vh - 100px); 
-    overflow: hidden; 
+    height: auto;
     background: var(--background-color);
     font-family: 'Inter', sans-serif;
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        height: calc(110vh - 100px);
+        overflow: hidden;
+    }
 }
 
 .filter {
-    min-width: 300px;
-    width: 25%;
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    border: 2px solid #e2e8f0;
-    position: sticky;
-    top: 20px;
-    height: fit-content;
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    width: 100%;
+    min-width: unset;
+    padding: 1.5rem;
+    position: relative;
+    height: auto;
+    overflow: visible;
+
+    @media (min-width: 768px) {
+        width: 25%;
+        min-width: 300px;
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+        overflow-y: auto;
+    }
     
     &::-webkit-scrollbar {
         display: none; 
@@ -127,16 +135,21 @@
 
 .dev_side {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     align-content: start;
     height: fit-content;
     overflow-y: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none; 
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+    }
     
     &::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, Opera */
+        display: none; 
     }
 }
 
@@ -277,12 +290,20 @@
     align-items: center;
     z-index: 1000;
 
+    @media (min-width: 768px) {
+        max-width: 500px;
+    }
+
     .modal-content {
         background-color: white;
         padding: 20px;
         border-radius: 8px;
         width: 90%;
         max-width: 500px;
+
+        @media (min-width: 768px) {
+            max-width: 500px;
+        }
 
         h3 {
             margin-bottom: 20px;
@@ -359,6 +380,11 @@
     border: 1px solid #e2e8f0;
     margin-bottom: 1.5rem;
 
+    @media (min-width: 768px) {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
     .price-range-header {
         display: flex;
         justify-content: space-between;
@@ -434,6 +460,10 @@
     align-items: center;
     gap: 12px;
     animation: slideIn 0.3s ease-out;
+
+    @media (min-width: 768px) {
+        max-width: 600px;
+    }
 
     .error-icon {
         width: 20px;

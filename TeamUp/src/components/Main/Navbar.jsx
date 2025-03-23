@@ -10,6 +10,7 @@ const Navbar = () => {
     const [developers, setDevelopers] = useState([]);
     const [selectedRole, setSelectedRole] = useState("");
     const [userName, setUserName] = useState("");
+    const [isUserSignedIn, setIsUserSignedIn] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,6 +32,27 @@ const Navbar = () => {
         }
     }, []);
 
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            setIsUserSignedIn(true);
+            setUserName(JSON.parse(storedUser).name);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("userName");
+        setIsUserSignedIn(false);
+        localStorage.removeItem("token");
+        setUserName("");
+        navigate("/signin");
+        window.location.reload();
+    };
+
+    const handleSignUp = () => {
+        navigate("/signUp");
+    };
 
     const dropDownHandler = () => {
         setProfileMenu(!profileMenu);
@@ -60,7 +82,7 @@ const Navbar = () => {
             <div className={classes["nav-right"]}>
                 <button className={classes["profile-btn"]} onClick={dropDownHandler}>
                     <div>
-                        <img src={profileImg} className={classes["profile-pic"]} alt="Profile"/>
+                        <img src={profileImg} className={classes["profile-pic"]} alt="Profile" />
                         <h3>{userName}</h3>
                     </div>
                 </button>
@@ -72,7 +94,12 @@ const Navbar = () => {
                         <li><a onClick={() => navigate("/Messenger")}>Messenger</a></li>
                         <li><a onClick={() => navigate("/Request")}>Requests</a></li>
                         <li><a>Support</a></li>
-                        <li><a onClick={() => navigate("/signin")}>Logout</a></li>
+                        {!isUserSignedIn && (
+                            <li><a onClick={handleSignUp}>SignUp</a></li>
+                        )}
+                        {isUserSignedIn && (
+                            <li><a onClick={handleLogout}>Logout</a></li>
+                        )}
                     </ul>
                 )}
             </div>

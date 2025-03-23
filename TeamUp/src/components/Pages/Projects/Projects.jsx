@@ -48,33 +48,43 @@ const Projects = () => {
     maxDate.setFullYear(today.getFullYear() + 5);
 
     useEffect(() => {
-        fetchProjects();
+        const signedInUser = JSON.parse(localStorage.getItem("user"));
+    
+        if (signedInUser) {
+            fetchProjects();
+        } else {
+            setProjects([]); 
+        }
     }, []);
+    
 
     const fetchProjects = async () => {
+        const signedInUser = JSON.parse(localStorage.getItem("user"));
+        
+        if (!signedInUser) {
+            setProjects([]); 
+            return;
+        }
+    
         try {
             const response = await axios.get('http://localhost:5005/projects');
             const allProjects = response.data.projects || [];
 
-            //filter
             const filteredProjects = allProjects.filter(project => {
-                if (signedInUser.selectedRole === "client" || signedInUser.selectedRole === "Client") {
-
-                    return project.clientId?._id === signedInUser.id ||
-                        project.clientId === signedInUser.id;
-                } else if (signedInUser.selectedRole === "developer" || signedInUser.selectedRole === "Developer") {
-                    return project.developerId?._id === signedInUser.id ||
-                        project.developerId === signedInUser.id;
+                if (signedInUser.selectedRole?.toLowerCase() === "client") {
+                    return project.clientId?._id === signedInUser.id || project.clientId === signedInUser.id;
+                } else if (signedInUser.selectedRole?.toLowerCase() === "developer") {
+                    return project.developerId?._id === signedInUser.id || project.developerId === signedInUser.id;
                 }
                 return false;
             });
-
+    
             console.log("Filtered projects:", filteredProjects);
             setProjects(filteredProjects);
         } catch (error) {
             console.error("Error fetching projects:", error);
         }
-    };
+    };    
 
     const handleDateChange = (e) => {
         const selectedValue = e.target.value;

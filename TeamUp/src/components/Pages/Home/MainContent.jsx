@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { getRequest, postRequest } from "../../../utils/api.js"
+import { useNavigate } from "react-router-dom";
 import classes from "../../../modules/MainContent.module.scss"
 
 const MainContent = () => {
+    const navigate = useNavigate();
     const [developers, setDevelopers] = useState([]);
     const isUserSignedIn = localStorage.getItem('user');
 
@@ -19,6 +21,10 @@ const MainContent = () => {
         
         fetchDevelopers();
     }, []);
+
+    const handleSignUp = () => {
+        navigate("/signUp");
+    };
 
     return (
         <>
@@ -38,7 +44,7 @@ const MainContent = () => {
                         <br/>
                         <div className={classes["two-btn"]}>
                             {!isUserSignedIn && (
-                                <button className={classes["blue-btn"]}>Get Started</button>
+                                <button className={classes["blue-btn"]} onClick={handleSignUp}>Get Started</button>
                             )}
                             <button className={classes["white-btn"]}>Learn More</button>
                         </div>
