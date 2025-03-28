@@ -231,7 +231,7 @@ const Projects = () => {
             <div className={styles.projectsContainer}>
                 <div className={styles.header}>
                     <h1>Projects</h1>
-                    {(signedInUser?.selectedRole === "client" || signedInUser?.selectedRole === "Client") && (
+                    {signedInUser && signedInUser.selectedRole?.toLowerCase() === "client" && (
                         <button
                             className={styles.createButton}
                             onClick={() => setShowCreateForm(true)}

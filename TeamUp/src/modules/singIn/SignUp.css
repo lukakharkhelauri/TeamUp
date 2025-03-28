@@ -18,7 +18,7 @@
   min-height: 100vh;
   background: var(--background-color);
   font-family: 'Inter', sans-serif;
-  overflow: hidden; /* Prevent outer scrollbar */
+  overflow: hidden;
 }
 
 .left-side {
@@ -27,11 +27,16 @@
   max-width: 900px;
   margin: 0 auto;
   overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+
+  /* EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE */
+
+  @media (max-width: 768px) { 
+    padding: 2rem;
+  }
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 .left-side::-webkit-scrollbar {
   display: none;
 }
@@ -46,7 +51,7 @@
 
 .role-selection {
   display: flex;
-  gap: 2rem;
+  gap: 5px;
   margin-bottom: 3rem;
 }
 
@@ -60,6 +65,7 @@
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+
 }
 
 .role-card:hover {
@@ -375,7 +381,6 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Animations */
 @keyframes slideUp {
   from {
     opacity: 0;
