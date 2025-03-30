@@ -6,14 +6,13 @@
   
   @media (max-width: 768px) {
     flex-direction: column;
-    height: calc(100vh - 60px);
   }
 }
 
 .burger-menu {
   display: none;
-  position: fixed;
-  top: 70px;
+  position: absolute;
+  top: 0px;
   left: 20px;
   z-index: 100;
   cursor: pointer;

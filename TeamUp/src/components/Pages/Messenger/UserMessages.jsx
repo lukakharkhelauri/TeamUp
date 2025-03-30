@@ -65,6 +65,7 @@ const UserMessages = () => {
 
   const handleSelectConversation = (conversation) => {
     setSelectedConversation(conversation);
+    closeSidebar();
   };
 
   const toggleSidebar = () => {
