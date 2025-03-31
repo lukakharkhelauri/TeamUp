@@ -18,7 +18,7 @@ const MainContent = () => {
                 console.error("Error", error);
             }
         };
-        
+
         fetchDevelopers();
     }, []);
 
@@ -31,9 +31,8 @@ const MainContent = () => {
             <div className={classes["main-container"]}>
                 <div className={classes["left-side"]}>
                     <div className={classes["content-wrapper"]}>
-                        <h1>Connect with top developers and clients worldwide</h1>
-                        <br/>
-                        <p>
+                        <h1 className={classes["center-text"]}>Connect with top developers and clients worldwide</h1>
+                        <p className={classes["center-text"]}>
                             Lorem Ipsum is simply dummy
                             text of the printing and
                             typesetting industry. Lorem Ipsum
@@ -41,26 +40,26 @@ const MainContent = () => {
                             text ever since the 1500s
                             and best site ever you can see
                         </p>
-                        <br/>
+                        <br />
                         <div className={classes["two-btn"]}>
                             {!isUserSignedIn && (
                                 <button className={classes["blue-btn"]} onClick={handleSignUp}>Get Started</button>
                             )}
                             <button className={classes["white-btn"]}>Learn More</button>
                         </div>
-                        <br/><br/>
+                        <br /><br />
                         <div className={classes["result-side"]}>
                             <div>
-                                <h2>{developers.length}</h2>
-                                <p>Active Developers</p>
+                                <h2>6K+</h2>
+                                <p className={classes["p"]}>Active Developers</p>
                             </div>
                             <div>
                                 <h2>5k+</h2>
-                                <p>Projects Completed</p>
+                                <p className={classes["p"]}>Projects Completed</p>
                             </div>
                             <div>
                                 <h2>8k+</h2>
-                                <p>Happy Clients</p>
+                                <p className={classes["p"]}>Happy Clients</p>
                             </div>
                         </div>
                     </div>
