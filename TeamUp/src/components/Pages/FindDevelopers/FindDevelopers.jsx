@@ -137,7 +137,7 @@ const FindDevelopers = () => {
     return (
         <>
             <Navbar />
-            <br /><br />
+            <br/><br/><br/>
             {errorMessage && (
                 <div className={classes["error-message"]}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={classes["error-icon"]}>

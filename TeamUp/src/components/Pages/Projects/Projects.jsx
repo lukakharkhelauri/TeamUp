@@ -11,6 +11,7 @@ const Projects = () => {
     const [showProjects, setShowProjects] = useState(true);
     const [projects, setProjects] = useState([]);
     const [showCreateForm, setShowCreateForm] = useState(false);
+    const [selectedExperiences, setSelectedExperiences] = useState([]);
     const [developers, setDevelopers] = useState({
         lowBudget: [],
         matching: [],
@@ -39,9 +40,13 @@ const Projects = () => {
         performanceStandards: "",
         budget: "",
         deadline: "",
+        hasExperience: false,
+        noExperience: false,
+        showAdvanced: false,
     });
     const [dateError, setDateError] = useState("");
     const [fixedDevelopers, setFixedDevelopers] = useState([]);
+    const [experienceYears, setExperienceYears] = useState({});
 
     const today = new Date();
     const maxDate = new Date();
@@ -49,23 +54,23 @@ const Projects = () => {
 
     useEffect(() => {
         const signedInUser = JSON.parse(localStorage.getItem("user"));
-    
+
         if (signedInUser) {
             fetchProjects();
         } else {
-            setProjects([]); 
+            setProjects([]);
         }
     }, []);
-    
+
 
     const fetchProjects = async () => {
         const signedInUser = JSON.parse(localStorage.getItem("user"));
-        
+
         if (!signedInUser) {
-            setProjects([]); 
+            setProjects([]);
             return;
         }
-    
+
         try {
             const response = await axios.get('http://localhost:5005/projects');
             const allProjects = response.data.projects || [];
@@ -78,13 +83,13 @@ const Projects = () => {
                 }
                 return false;
             });
-    
+
             console.log("Filtered projects:", filteredProjects);
             setProjects(filteredProjects);
         } catch (error) {
             console.error("Error fetching projects:", error);
         }
-    };    
+    };
 
     const handleDateChange = (e) => {
         const selectedValue = e.target.value;
@@ -105,6 +110,34 @@ const Projects = () => {
         }
     };
 
+    const handleExperienceChange = (experience) => {
+        setSelectedExperiences(prev => {
+            if (prev.includes(experience)) {
+                setExperienceYears(prevYears => {
+                    const { [experience]: removed, ...rest } = prevYears;
+                    return rest;
+                });
+                return prev.filter(exp => exp !== experience);
+            } else {
+                return [...prev, experience];
+            }
+        });
+    };
+
+    const handleYearsChange = (experience, years) => {
+        if (years === "" || years === "0") {
+            setExperienceYears(prev => {
+                const { [experience]: removed, ...rest } = prev;
+                return rest;
+            });
+        } else {
+            setExperienceYears(prev => ({
+                ...prev,
+                [experience]: parseInt(years)
+            }));
+        }
+    };
+
     const handleStartSearching = async (e) => {
         e.preventDefault();
         if (dateError) {
@@ -114,13 +147,22 @@ const Projects = () => {
 
         try {
             const response = await axios.get('http://localhost:5005/users');
-            const allDevelopers = response.data.users.filter(user =>
+            let allDevelopers = response.data.users.filter(user =>
                 user.selectedRole === "developer"
             );
 
-            const groupSize = Math.ceil(allDevelopers.length / 3);
+            if (formData.hasExperience && selectedExperiences.length > 0) {
+                allDevelopers = allDevelopers.filter(dev => 
+                    selectedExperiences.some(exp => 
+                        dev.selectedExperience?.includes(exp)
+                    )
+                );
+            }
 
- 
+            allDevelopers = allDevelopers.slice(0, 12);
+
+            const groupSize = 4;
+
             const Team1 = allDevelopers.slice(0, groupSize);
             const Team2 = allDevelopers.slice(groupSize, groupSize * 2);
             const Team3 = allDevelopers.slice(groupSize * 2);
@@ -247,16 +289,15 @@ const Projects = () => {
                             <h2 className={styles.modalTitle}>Create New Project</h2>
                             <div className={styles.modalBody}>
                                 <form onSubmit={handleStartSearching} className={styles.projectForm}>
-                                    <input
-                                        type="text"
-                                        placeholder="Project Name"
-                                        value={formData.projectName}
-                                        onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
-                                        required
-                                    />
+                                    <div className={styles.formRow}>
+                                        <input
+                                            type="text"
+                                            placeholder="Project Name"
+                                            value={formData.projectName}
+                                            onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
+                                            required
+                                        />
 
-                                    <div className={styles.formSection}>
-                                        <h3>1. Project Description</h3>
                                         <select
                                             value={formData.projectType}
                                             onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
@@ -267,122 +308,7 @@ const Projects = () => {
                                             <option value="app">Mobile App</option>
                                             <option value="Startup">Startup</option>
                                         </select>
-                                        <textarea
-                                            placeholder="What problem will this project solve or satisfy?"
-                                            value={formData.problemSolution}
-                                            onChange={(e) => setFormData({ ...formData, problemSolution: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="Who needs this project (users)?"
-                                            value={formData.targetUsers}
-                                            onChange={(e) => setFormData({ ...formData, targetUsers: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="What results should you get?"
-                                            value={formData.expectedResults}
-                                            onChange={(e) => setFormData({ ...formData, expectedResults: e.target.value })}
-                                            required
-                                        />
-                                    </div>
 
-                                    <div className={styles.formSection}>
-                                        <h3>2. Goals</h3>
-                                        <textarea
-                                            placeholder="What goals should this project achieve?"
-                                            value={formData.projectGoals}
-                                            onChange={(e) => setFormData({ ...formData, projectGoals: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="What should be changed/improved after use?"
-                                            value={formData.improvements}
-                                            onChange={(e) => setFormData({ ...formData, improvements: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="What specific results should you get?"
-                                            value={formData.specificResults}
-                                            onChange={(e) => setFormData({ ...formData, specificResults: e.target.value })}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className={styles.formSection}>
-                                        <h3>3. Main Functions</h3>
-                                        <textarea
-                                            placeholder="What main functions should the project have?"
-                                            value={formData.mainFunctions}
-                                            onChange={(e) => setFormData({ ...formData, mainFunctions: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="How should these functions be used by users?"
-                                            value={formData.functionUsage}
-                                            onChange={(e) => setFormData({ ...formData, functionUsage: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="What actions will be available to users?"
-                                            value={formData.userActions}
-                                            onChange={(e) => setFormData({ ...formData, userActions: e.target.value })}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className={styles.formSection}>
-                                        <h3>4. Design Requirements</h3>
-                                        <textarea
-                                            placeholder="What should the product look like?"
-                                            value={formData.designLook}
-                                            onChange={(e) => setFormData({ ...formData, designLook: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="What elements should be in the design (quality, visualization, interface)?"
-                                            value={formData.designElements}
-                                            onChange={(e) => setFormData({ ...formData, designElements: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="How should the content be organized and what should be easy for the user?"
-                                            value={formData.contentOrganization}
-                                            onChange={(e) => setFormData({ ...formData, contentOrganization: e.target.value })}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className={styles.formSection}>
-                                        <h3>5. Technical Requirements</h3>
-                                        <textarea
-                                            placeholder="What technologies should the project use?"
-                                            value={formData.technologies}
-                                            onChange={(e) => setFormData({ ...formData, technologies: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="What operating systems should be supported?"
-                                            value={formData.operatingSystems}
-                                            onChange={(e) => setFormData({ ...formData, operatingSystems: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="What hardware requirements should it have (memory, processor)?"
-                                            value={formData.hardwareRequirements}
-                                            onChange={(e) => setFormData({ ...formData, hardwareRequirements: e.target.value })}
-                                            required
-                                        />
-                                        <textarea
-                                            placeholder="What performance and quality standards must be maintained?"
-                                            value={formData.performanceStandards}
-                                            onChange={(e) => setFormData({ ...formData, performanceStandards: e.target.value })}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className={styles.formSection}>
-                                        <h3>Budget and Deadline</h3>
                                         <input
                                             type="number"
                                             placeholder="Budget ($)"
@@ -390,20 +316,219 @@ const Projects = () => {
                                             onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                                             required
                                         />
-                                        <div className={styles.dateInputContainer}>
-                                            <input
-                                                type="date"
-                                                value={formData.deadline}
-                                                onChange={handleDateChange}
-                                                min={today.toISOString().split('T')[0]}
-                                                max={maxDate.toISOString().split('T')[0]}
-                                                required
-                                            />
-                                            {dateError && (
-                                                <span className={styles.errorMessage}>{dateError}</span>
-                                            )}
-                                        </div>
                                     </div>
+                                    <div className={styles.checkboxGroup}>
+                                        <label className={styles.checkboxGroup}>
+                                            <input className="checkbox"
+                                                type="checkbox"
+                                                checked={formData.hasExperience}
+                                                onChange={(e) =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        hasExperience: e.target.checked,
+                                                        noExperience: !e.target.checked,
+                                                    })
+                                                }
+                                            />
+                                            I have experience
+                                        </label>
+                                        <label className={styles.checkboxGroup}>
+                                            <input 
+                                                type="checkbox"
+                                                checked={formData.noExperience}
+                                                onChange={(e) =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        noExperience: e.target.checked,
+                                                        hasExperience: !e.target.checked,
+                                                    })
+                                                }
+                                            />
+                                            I don't have experience
+                                        </label>
+                                    </div>
+
+                                    {formData.hasExperience && (
+                                        <div className="form-section expertise-section">
+                                            <h3>Choose Expertise</h3>
+                                            <div className="checkbox-group">
+                                                {[
+                                                    "Front End Developer",
+                                                    "Back End Developer",
+                                                    "Fullstack Developer",
+                                                    "UX/UI Designer",
+                                                    "Graphic Designer",
+                                                    "QA Engineer",
+                                                ].map((item) => (
+                                                    <div key={item} className="checkbox-item">
+                                                        <input
+                                                            type="checkbox"
+                                                            id={item}
+                                                            value={item}
+                                                            checked={selectedExperiences.includes(item)}
+                                                            onChange={() => handleExperienceChange(item)}
+                                                        />
+                                                        <label htmlFor={item}>{item}</label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className={styles.dateInputContainer}>
+                                        <input
+                                            type="date"
+                                            value={formData.deadline}
+                                            onChange={handleDateChange}
+                                            min={today.toISOString().split('T')[0]}
+                                            max={maxDate.toISOString().split('T')[0]}
+                                            required
+                                        />
+                                        {dateError && (
+                                            <span className={styles.errorMessage}>{dateError}</span>
+                                        )}
+                                    </div>
+                                    <div className={styles.checkboxGroup}>
+                                        <label>
+                                            <input 
+                                                type="checkbox"
+                                                checked={formData.showAdvanced}
+                                                onChange={(e) => setFormData({ ...formData, showAdvanced: e.target.checked })}
+                                            />
+                                            Show advanced options
+                                        </label>
+                                    </div>
+
+                                    {formData.showAdvanced && (
+                                        <>
+                                            <div className={styles.formSection}>
+                                                <h3>1. Project Description</h3>
+                                                <select
+                                                    value={formData.projectType}
+                                                    onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
+                                                    required
+                                                >
+                                                    <option value="">Select Project Type</option>
+                                                    <option value="website">Website</option>
+                                                    <option value="app">Mobile App</option>
+                                                    <option value="Startup">Startup</option>
+                                                </select>
+                                                <textarea
+                                                    placeholder="What problem will this project solve or satisfy?"
+                                                    value={formData.problemSolution}
+                                                    onChange={(e) => setFormData({ ...formData, problemSolution: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="Who needs this project (users)?"
+                                                    value={formData.targetUsers}
+                                                    onChange={(e) => setFormData({ ...formData, targetUsers: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="What results should you get?"
+                                                    value={formData.expectedResults}
+                                                    onChange={(e) => setFormData({ ...formData, expectedResults: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div className={styles.formSection}>
+                                                <h3>2. Goals</h3>
+                                                <textarea
+                                                    placeholder="What goals should this project achieve?"
+                                                    value={formData.projectGoals}
+                                                    onChange={(e) => setFormData({ ...formData, projectGoals: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="What should be changed/improved after use?"
+                                                    value={formData.improvements}
+                                                    onChange={(e) => setFormData({ ...formData, improvements: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="What specific results should you get?"
+                                                    value={formData.specificResults}
+                                                    onChange={(e) => setFormData({ ...formData, specificResults: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div className={styles.formSection}>
+                                                <h3>3. Main Functions</h3>
+                                                <textarea
+                                                    placeholder="What main functions should the project have?"
+                                                    value={formData.mainFunctions}
+                                                    onChange={(e) => setFormData({ ...formData, mainFunctions: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="How should these functions be used by users?"
+                                                    value={formData.functionUsage}
+                                                    onChange={(e) => setFormData({ ...formData, functionUsage: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="What actions will be available to users?"
+                                                    value={formData.userActions}
+                                                    onChange={(e) => setFormData({ ...formData, userActions: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div className={styles.formSection}>
+                                                <h3>4. Design Requirements</h3>
+                                                <textarea
+                                                    placeholder="What should the product look like?"
+                                                    value={formData.designLook}
+                                                    onChange={(e) => setFormData({ ...formData, designLook: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="What elements should be in the design (quality, visualization, interface)?"
+                                                    value={formData.designElements}
+                                                    onChange={(e) => setFormData({ ...formData, designElements: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="How should the content be organized and what should be easy for the user?"
+                                                    value={formData.contentOrganization}
+                                                    onChange={(e) => setFormData({ ...formData, contentOrganization: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div className={styles.formSection}>
+                                                <h3>5. Technical Requirements</h3>
+                                                <textarea
+                                                    placeholder="What technologies should the project use?"
+                                                    value={formData.technologies}
+                                                    onChange={(e) => setFormData({ ...formData, technologies: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="What operating systems should be supported?"
+                                                    value={formData.operatingSystems}
+                                                    onChange={(e) => setFormData({ ...formData, operatingSystems: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="What hardware requirements should it have (memory, processor)?"
+                                                    value={formData.hardwareRequirements}
+                                                    onChange={(e) => setFormData({ ...formData, hardwareRequirements: e.target.value })}
+                                                    required
+                                                />
+                                                <textarea
+                                                    placeholder="What performance and quality standards must be maintained?"
+                                                    value={formData.performanceStandards}
+                                                    onChange={(e) => setFormData({ ...formData, performanceStandards: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+
+                                        </>
+                                    )}
 
                                     <div className={styles.formButtons}>
                                         <button type="submit">Start Searching</button>

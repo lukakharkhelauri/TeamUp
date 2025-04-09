@@ -28,8 +28,8 @@ const SignUp = () => {
     setErrorMessage('');
   }, []);
 
-  
-    //check email with api (expired free trial)
+
+  //check email with api (expired free trial)
   // const handleEmailCheck = async () => {
   //   try {
   //     const response = await axios.get(`https://api.hunter.io/v2/email-verifier?email=${email}&api_key=663462e543fab55bd97ecaa16c4d81e8f32c53a7`);
@@ -46,26 +46,26 @@ const SignUp = () => {
   //   }
   // };
 
-    //check email without api
+  //check email without api
   const handleEmailCheck = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailRegex.test(email)) {
-        setErrorMessage("Invalid email format");
-        return false;
+      setErrorMessage("Invalid email format");
+      return false;
     }
 
     const commonFakeDomains = ["example.com", "test.com", "fakeemail.com"];
     const emailDomain = email.split("@")[1];
 
     if (commonFakeDomains.includes(emailDomain)) {
-        setErrorMessage("This email domain is not valid");
-        return false;
+      setErrorMessage("This email domain is not valid");
+      return false;
     }
 
-    setErrorMessage(""); 
+    setErrorMessage("");
     return true;
-};
+  };
 
 
 
@@ -85,13 +85,13 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const isEmailValid = handleEmailCheck(email);
     if (!isEmailValid) return;
-  
+
     const isPasswordValid = validatePasswords();
     if (!isPasswordValid) return;
-  
+
     const user = {
       name,
       email,
@@ -108,13 +108,13 @@ const SignUp = () => {
         projectStyle,
       })
     };
-  
+
     try {
       console.log('Sending POST request to create user');
       const response = await axios.post('http://localhost:5005/users', user);
-  
+
       if (response.data.success) {
-        localStorage.clear();  
+        localStorage.clear();
         localStorage.setItem('user', JSON.stringify(response.data.user));
         localStorage.setItem('userName', response.data.user.name);
         localStorage.setItem('selectedRole', response.data.user.selectedRole);
@@ -127,8 +127,8 @@ const SignUp = () => {
         setSelectedRole(null);
         setSelectedStatus("company");
         setPriceRange(0);
-        setErrorMessage(''); 
-  
+        setErrorMessage('');
+
         window.location.href = '/';
       } else {
         setErrorMessage('Failed to create user');
@@ -138,14 +138,14 @@ const SignUp = () => {
       setErrorMessage('Error creating user');
     }
   };
-  
+
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
-    
+
   //   const isEmailValid = await handleEmailCheck();
   //   if (!isEmailValid) return;
-    
+
   //   const isPasswordValid = validatePasswords();
   //   if (!isPasswordValid) return;
 
@@ -196,40 +196,40 @@ const SignUp = () => {
   const handleRoleChange = (role) => {
     setSelectedRole(role === selectedRole ? null : role);
     setRoleSelected(true);
-    setErrorMessage(''); 
+    setErrorMessage('');
   };
 
   const handleExperienceChange = (experience) => {
     setSelectedExperiences(prev => {
-        if (prev.includes(experience)) {
-            setExperienceYears(prevYears => {
-                const { [experience]: removed, ...rest } = prevYears;
-                return rest;
-            });
-            return prev.filter(exp => exp !== experience);
-        } else {
-            return [...prev, experience];
-        }
+      if (prev.includes(experience)) {
+        setExperienceYears(prevYears => {
+          const { [experience]: removed, ...rest } = prevYears;
+          return rest;
+        });
+        return prev.filter(exp => exp !== experience);
+      } else {
+        return [...prev, experience];
+      }
     });
   };
 
   const handleYearsChange = (experience, years) => {
     if (years === "" || years === "0") {
-        setExperienceYears(prev => {
-            const { [experience]: removed, ...rest } = prev;
-            return rest;
-        });
+      setExperienceYears(prev => {
+        const { [experience]: removed, ...rest } = prev;
+        return rest;
+      });
     } else {
-        setExperienceYears(prev => ({
-            ...prev,
-            [experience]: parseInt(years)
-        }));
+      setExperienceYears(prev => ({
+        ...prev,
+        [experience]: parseInt(years)
+      }));
     }
   };
 
   const handlePriceChange = (priceRangeString) => {
     setPriceRange(priceRangeString);
-    console.log('Price range updated:', priceRangeString); 
+    console.log('Price range updated:', priceRangeString);
   };
 
   useEffect(() => {
@@ -277,7 +277,7 @@ const SignUp = () => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
-        document.body.style.overflow = 'auto';
+      document.body.style.overflow = 'auto';
     };
   }, []);
 
@@ -293,8 +293,8 @@ const SignUp = () => {
           </div>
 
           <div className={`role-card ${selectedRole === "client" ? "selected" : ""}`} onClick={() => handleRoleChange("client")}>
-            <h3 className="role-title">🏢 
-            Contractor</h3>
+            <h3 className="role-title">🏢
+              Contractor</h3>
             <p className="role-description">Find developers and get your projects done</p>
           </div>
         </div>
@@ -309,7 +309,7 @@ const SignUp = () => {
             >
               <div className="form-section">
                 <h3>Register</h3>
-                
+
                 {errorMessage && (
                   <div className="error-box">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -382,9 +382,9 @@ const SignUp = () => {
                     />
                   </div>
 
-                  <select 
-                    className="input-selection" 
-                    value={selectedStatus} 
+                  <select
+                    className="input-selection"
+                    value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
                   >
                     <option value="" disabled>Status</option>
@@ -397,29 +397,29 @@ const SignUp = () => {
               <div className="form-section expertise-section">
                 <h3>Choose Expertise</h3>
                 <div className="checkbox-group">
-                  {["Front End Developer", "Back End Developer", "Fullstack Developer", 
+                  {["Front End Developer", "Back End Developer", "Fullstack Developer",
                     "UX/UI Designer", "Graphic Designer", "QA Engineer"].map((item) => (
-                    <div key={item} className="checkbox-item">
-                      <input
-                        type="checkbox"
-                        id={item}
-                        value={item}
-                        checked={selectedExperiences.includes(item)}
-                        onChange={() => handleExperienceChange(item)}
-                      />
-                      <label htmlFor={item}>{item}</label>
-                      {selectedExperiences.includes(item) && (
+                      <div key={item} className="checkbox-item">
                         <input
-                          type="number"
-                          min="0"
-                          value={experienceYears[item] || ""}
-                          onChange={(e) => handleYearsChange(item, e.target.value)}
-                          placeholder="Years"
-                          className="years-input"
+                          type="checkbox"
+                          id={item}
+                          value={item}
+                          checked={selectedExperiences.includes(item)}
+                          onChange={() => handleExperienceChange(item)}
                         />
-                      )}
-                    </div>
-                  ))}
+                        <label htmlFor={item}>{item}</label>
+                        {selectedExperiences.includes(item) && (
+                          <input
+                            type="number"
+                            min="0"
+                            value={experienceYears[item] || ""}
+                            onChange={(e) => handleYearsChange(item, e.target.value)}
+                            placeholder="Years"
+                            className="years-input"
+                          />
+                        )}
+                      </div>
+                    ))}
                 </div>
               </div>
 
@@ -431,7 +431,7 @@ const SignUp = () => {
               <button className="submit-button" onClick={handleSubmit}>
                 Submit
               </button>
-              
+
               <p className="signin-footer">
                 Already have an account? <a href="/SignIn">Sign In</a>
               </p>
@@ -442,10 +442,10 @@ const SignUp = () => {
         {/* Client Form */}
         <AnimatePresence>
           {selectedRole === "client" && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }} 
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }} 
+              exit={{ opacity: 0, height: 0 }}
               className="client-form"
             >
               <h3 id='need-team'>Client Registration</h3>
@@ -532,7 +532,7 @@ const SignUp = () => {
                   </select>
                 </div>
               </div>
-              
+
               <button className="submit-button" onClick={handleSubmit}>
                 Submit
               </button>

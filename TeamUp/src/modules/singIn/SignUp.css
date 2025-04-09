@@ -180,6 +180,7 @@
   border-radius: 4px;
   border: 2px solid var(--border-color);
   cursor: pointer;
+  accent-color: #efd135;
 }
 
 .checkbox-label {

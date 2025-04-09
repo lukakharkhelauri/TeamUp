@@ -10,6 +10,7 @@ function App() {
     return (
         <>
              <Navbar/>
+             <br/><br/><br/><br/>
             <div>
             <MainContent/>
             <FeaturedProjects/>
