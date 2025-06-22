@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import classes from "../../../modules/Messenger/UserMessages.module.scss";
 import NavBar from "../../Main/Navbar.jsx";
-import Messages from "./Messages.jsx";
+import MessagesComponent from "./Messages.jsx";
 import userProfile from "../../../assets/Home-page-pics/profile-pic.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -10,60 +9,69 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 const UserMessages = () => {
   const [usersData, setUsersData] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
-  const currentUser = JSON.parse(localStorage.getItem("user"));
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!currentUser?.id) return;
+        try {
+            setLoading(true);
+            
+            const currentUser = JSON.parse(localStorage.getItem("user"));
+            
+            if (!currentUser) {
+                console.error("No user found in localStorage");
+                setLoading(false);
+                return;
+            }
+            
+            const conversations = JSON.parse(localStorage.getItem('conversations') || '[]');
+            
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            
 
-      try {
-        setLoading(true);
-
-        const conversationsResponse = await axios.get(`http://localhost:5005/conversations/${currentUser.id}`);
-        const conversations = conversationsResponse.data;
-
-        const connectionsResponse = await axios.get(`http://localhost:5005/connections/user/${currentUser.id}`);
-        const connections = connectionsResponse.data.connections || [];
-
-        const allConversations = conversations.map((conv) => {
-          if (conv.isGroup) {
-            return {
-              ...conv,
-              isGroup: true,
-              groupName: conv.groupName,
-            };
-          } else {
-            const connection = connections.find((conn) => {
-              const otherUser = conn.developerId._id === currentUser.id ? conn.clientId : conn.developerId;
-              return conv.participants.some(
-                (participant) => participant._id === otherUser._id
-              );
-            });
-
-            const otherParticipant = conv.participants.find(
-              (participant) => participant._id !== currentUser.id
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            const userConversations = conversations.filter(conv => 
+                conv.participants.includes(currentUser.id || currentUser._id)
             );
-
-            return {
-              ...conv,
-              isGroup: false,
-              name: otherParticipant?.name || "Unknown User",
-              connectionId: connection ? connection._id : null,
-            };
-          }
-        });
-        setUsersData(allConversations);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
+            
+            const processedConversations = userConversations.map(conv => {
+                const lastMessage = messages
+                    .filter(msg => msg.conversation === conv._id)
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+                
+                const participantDetails = conv.participants
+                    .filter(id => id !== (currentUser.id || currentUser._id))
+                    .map(id => {
+                        const user = users.find(u => u._id === id || u.id === id);
+                        return user || { name: 'Unknown User', _id: id };
+                    });
+                
+                return {
+                    ...conv,
+                    lastMessage,
+                    participants: participantDetails
+                };
+            });
+            
+            processedConversations.sort((a, b) => {
+                const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(a.createdAt);
+                const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(b.createdAt);
+                return dateB - dateA;
+            });
+            
+            console.log("Processed conversations:", processedConversations);
+            setUsersData(processedConversations);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching conversations:", error);
+            setLoading(false);
+        }
     };
 
     fetchData();
-  }, [currentUser?.id]);
+}, []);
 
   const handleSelectConversation = (conversation) => {
     setSelectedConversation(conversation);
@@ -109,7 +117,7 @@ const UserMessages = () => {
             {loading ? (
               <p>Loading...</p>
             ) : usersData.length > 0 ? (
-              usersData.filter((user) => user.name !== localStorage.getItem("userName")).map((conversation) => (
+              usersData.map((conversation) => (
                 <div
                   key={conversation._id}
                   className={`${classes["contact-users"]} ${
@@ -135,7 +143,7 @@ const UserMessages = () => {
         </aside>
         <main className={classes["chat-area"]} onClick={closeSidebar}>
           {selectedConversation ? (
-            <Messages selectedConversation={selectedConversation} />
+            <MessagesComponent selectedConversation={selectedConversation} />
           ) : (
             <div className={classes["no-chat-selected"]}>
               <h2>Select a conversation to start messaging</h2>

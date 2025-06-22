@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
-import '../../../modules/singIn/SignUp.css';
+import '../../../modules/singIn/SignUp.scss';
 import PriceRangeSlider from '../SingIn/PriceRangeSlider';
 
 const SignUp = () => {
@@ -115,7 +115,9 @@ const SignUp = () => {
   
       if (response.data.success) {
         localStorage.clear();  
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        const userData = response.data.user;
+        userData.id = userData._id;
+        localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('userName', response.data.user.name);
         localStorage.setItem('selectedRole', response.data.user.selectedRole);
         localStorage.setItem('isAuthenticated', 'true');

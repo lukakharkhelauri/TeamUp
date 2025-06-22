@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { postRequest } from "../../../utils/api.js"
 import { useState } from "react";
-import "../../../modules/singIn/SignIn.css";
+import "../../../modules/singIn/SignIn.scss";
 import { useNavigate, Link } from "react-router-dom";
 
 const SignIn = () => {

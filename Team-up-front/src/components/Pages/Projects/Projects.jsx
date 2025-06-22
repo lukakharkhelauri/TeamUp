@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { getRequest, postRequest } from "../../../utils/api";
 import Navbar from "../../Main/Navbar.jsx"
 import styles from "../../../modules/Projects/Projects.module.scss"
 import clientProfile from "../../../assets/Home-page-pics/profile-pic.jpg"
@@ -73,8 +73,8 @@ const Projects = () => {
         }
 
         try {
-            const response = await axios.get('http://localhost:5005/projects');
-            const allProjects = response.data.projects || [];
+            const response = await getRequest('/api/projects');
+            const allProjects = response.projects || [];
 
             const filteredProjects = allProjects.filter(project => {
                 if (signedInUser.selectedRole?.toLowerCase() === "client") {
@@ -138,8 +138,24 @@ const Projects = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.get('http://localhost:5005/users');
-            let allDevelopers = response.data.users.filter(user =>
+            const response = await getRequest('/users');
+            console.log("API Response:", response);
+            
+            // Check if response exists
+            if (!response) {
+                console.error("API response is empty or undefined");
+                setIsLoading(false);
+                return;
+            }
+            
+            // Check if response.users exists
+            if (!response.users) {
+                console.error("API response does not contain users data. Response structure:", JSON.stringify(response));
+                setIsLoading(false);
+                return;
+            }
+            
+            let allDevelopers = response.users.filter(user =>
                 user.selectedRole === "developer"
             );
 
@@ -240,7 +256,7 @@ const Projects = () => {
             console.log("Sending project data:", projectData);
 
             // Create the project
-            const projectResponse = await axios.post('http://localhost:5005/projects', projectData);
+            const projectResponse = await postRequest('/api/projects', projectData);
 
             // Create the conversation group
             const conversationData = {
@@ -249,7 +265,7 @@ const Projects = () => {
                 groupName: `${formData.projectName} - ${teamName} Group`
             };
 
-            await axios.post('http://localhost:5005/conversations', conversationData);
+            await postRequest('/api/conversations', conversationData);
 
             setShowCreateForm(false);
             setFormData({
@@ -317,6 +333,12 @@ const Projects = () => {
                         </button>
                     )}
                 </div>
+
+                {projects.length === 0 && !showDevelopers && !isLoading && (
+                    <p className={styles.emptyMessage}>
+                        No projects yet — let's get something started!
+                    </p>
+                )}
 
                 {showCreateForm && (
                     <div className={styles.modal} onClick={handleModalClick}>

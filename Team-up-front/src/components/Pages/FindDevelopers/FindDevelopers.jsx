@@ -135,65 +135,33 @@ const FindDevelopers = () => {
     };
 
     return (
-        <div className={classes["body"]}>
-            <Navbar />
-            <br /><br />
-            {errorMessage && (
-                <div className={classes["error-message"]}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={classes["error-icon"]}>
-                        <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                    </svg>
-                    {errorMessage}
-                </div>
-            )}
-            <div className={classes["filter-container"]}>
-                <div className={classes["filter"]}>
-                    <h3>Filter Developers</h3>
-                    <br />
-                    <h4>Skills</h4>
-                    <br />
-                    <div className={classes["dev-skills"]}>
-                        <p 
-                            onClick={() => handleSkillClick("Front End Developer")}
-                            className={selectedSkills.includes("Front End Developer") ? classes["selected"] : ""}
-                        >
-                            Front end
-                        </p>
-                        <p 
-                            onClick={() => handleSkillClick("Back End Developer")}
-                            className={selectedSkills.includes("Back End Developer") ? classes["selected"] : ""}
-                        >
-                            Back end
-                        </p>
-                        <p 
-                            onClick={() => handleSkillClick("Full Stack Developer")}
-                            className={selectedSkills.includes("Full Stack Developer") ? classes["selected"] : ""}
-                        >
-                            Full Stack
-                        </p>
-                        <p 
-                            onClick={() => handleSkillClick("UI/UX Designer")}
-                            className={selectedSkills.includes("UI/UX Designer") ? classes["selected"] : ""}
-                        >
-                            UI/UX Designer
-                        </p>
-                        <p 
-                            onClick={() => handleSkillClick("Graphic Designer")}
-                            className={selectedSkills.includes("Graphic Designer") ? classes["selected"] : ""}
-                        >
-                            Graphic Designer
-                        </p>
-                        <p 
-                            onClick={() => handleSkillClick("QA Engineer")}
-                            className={selectedSkills.includes("QA Engineer") ? classes["selected"] : ""}
-                        >
-                            QA Engineer
-                        </p>
-                    </div>
+        <>
+        <Navbar />
+        {errorMessage && (
+          <div className={classes["error-message"]}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={classes["error-icon"]}>
+              <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            {errorMessage}
+          </div>
+        )}
+      
+        <div className={classes["findDeveloper"]}>
+          <div className={classes["filter-container"]}>
+            <h2>Find Options</h2>
+            <div className={classes["filter-options"]}>
+              {["Front-End", "Back-End", "Full-Stack", "UI/UX-Designer", "Graphic-Designer", "QA-Engineer"].map((skill) => (
+                <p
+                  key={skill}
+                  onClick={() => handleSkillClick(skill.replace("-", " "))}
+                  className={selectedSkills.includes(skill.replace("-", " ")) ? classes["selected"] : ""}
+                >
+                  {skill}
+                </p>
+              ))}
+            </div>
 
-                    <br />
-                    <h4>Price Range</h4>
-                    <br />
+            <h4>Price Range</h4>
                     <div className={classes["search-box"]}>
                         <input 
                             type="number" 
@@ -204,106 +172,86 @@ const FindDevelopers = () => {
                         />
                         <p className={classes["price-hint"]}>Enter maximum price per hour ($)</p>
                     </div>
-                    <br /><br />
-                    <button 
-                        className={classes["filter-btn"]}
-                        onClick={applyFilters}
-                    >
-                        Apply Filters
-                    </button>
-                </div>
-                <div className={classes["dev_side"]}>
-                    {filteredDevelopers.length > 0 ? (
-                        filteredDevelopers.map((dev) => (
-                            <div key={dev._id} className={classes["developers"]}>
-                                <div>
-                                    <div className={classes["about-dev"]}>
-                                        <img src={devProfile} className={classes["dev-profile"]} alt="Developer" />
-                                        <div>
-                                            <h4>{dev.name}</h4>
-                                            <p>{dev.selectedStatus}</p>
-                                        </div>
-                                    </div>
-
-                                    <p className={classes["email"]}>{dev.email}</p>
-                                    <br />
-                                    <div className={classes["dev-knowledge"]}>
-                                        {dev.selectedExperience && dev.selectedExperience.length > 0 ? (
-                                            dev.selectedExperience.map((exp, index) => (
-                                                <p key={index}>{exp}</p>
-                                            ))
-                                        ) : (
-                                            <p className={classes["no-experience"]}>No experiences listed</p>
-                                        )}
-                                    </div>
-                                    <div className={classes["price-info"]}>
-                                        <p>Price range: <span>${dev.priceRange || 'Not specified'}</span></p>
-                                    </div>
-                                </div>
-                                <button 
-                                    className={classes["request-btn"]}
-                                    onClick={() => handleRequestClick(dev)}
-                                >
-                                    Request
-                                </button>
-                            </div>
-                        ))
-                    ) : (
-                        <div className={classes["no-results"]}>
-                            <p>No developers match your filters</p>
-                            <button 
-                                className={classes["clear-filters"]}
-                                onClick={() => {
-                                    setSelectedSkills([]);
-                                    setPriceRange("");
-                                    setFilteredDevelopers(developers);
-                                }}
-                            >
-                                Clear Filters
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {selectedDeveloper && (
-                <div className={classes["request-modal"]}>
-                    <div className={classes["modal-content"]}>
-                        <h3>Send Request to {selectedDeveloper.name}</h3>
-                        <input
-                            type="text"
-                            placeholder="Project Name"
-                            value={projectName}
-                            onChange={(e) => setProjectName(e.target.value)}
-                            required
-                        />
-                        <textarea
-                            placeholder="Project Description"
-                            value={projectDescription}
-                            onChange={(e) => setProjectDescription(e.target.value)}
-                            required
-                        />
-                        <div className={classes["modal-buttons"]}>
-                            <button 
-                                onClick={handleSendRequest}
-                                disabled={!projectName || !projectDescription}
-                            >
-                                Send Request
-                            </button>
-                            <button onClick={() => {
-                                setSelectedDeveloper(null);
-                                setProjectName("");
-                                setProjectDescription("");
-                            }}>
-                                Cancel
-                            </button>
-                        </div>
+      
+            <button onClick={applyFilters}>Press to Filter</button>
+          </div>
+      
+          <div className={classes["filtered-devs"]}>
+            {filteredDevelopers.length > 0 ? (
+              filteredDevelopers.map((dev) => (
+                <div key={dev._id} className={classes["devs"]}>
+                  <div className={classes["dev-flex"]}>
+                    <img src={devProfile} alt="Developer" />
+                    <div className={classes["flex-option"]}>
+                      <h3>{dev.name}</h3>
+                      <h4>${dev.priceRange || "Not specified"}</h4>
                     </div>
+                  </div>
+                  <h4>{dev.email}</h4>
+                  <div className={classes["skills"]}>
+                    {dev.selectedExperience && dev.selectedExperience.length > 0 ? (
+                      dev.selectedExperience.map((exp, index) => <p key={index}>{exp}</p>)
+                    ) : (
+                      <p className={classes["no-experience"]}>No experiences listed</p>
+                    )}
+                  </div>
+                  <button onClick={() => handleRequestClick(dev)}>Request</button>
                 </div>
+              ))
+            ) : (
+              <div className={classes["no-results"]}>
+                <p>No developers match your filters</p>
+                <button
+                  className={classes["clear-filters"]}
+                  onClick={() => {
+                    setSelectedSkills([]);
+                    setPriceRange("");
+                    setFilteredDevelopers(developers);
+                  }}
+                >
+                  Clear Filters
+                </button>
+              </div>
             )}
-            <br/><br/><br/><br/><br/><br/>
-            <Footer />
+          </div>
         </div>
+      
+        {selectedDeveloper && (
+          <div className={classes["request-modal"]}>
+            <div className={classes["modal-content"]}>
+              <h3>Send Request to {selectedDeveloper.name}</h3>
+              <input
+                type="text"
+                placeholder="Project Name"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                required
+              />
+              <textarea
+                placeholder="Project Description"
+                value={projectDescription}
+                onChange={(e) => setProjectDescription(e.target.value)}
+                required
+              />
+              <div className={classes["modal-buttons"]}>
+                <button
+                  onClick={handleSendRequest}
+                  disabled={!projectName || !projectDescription}
+                >
+                  Send Request
+                </button>
+                <button onClick={() => {
+                  setSelectedDeveloper(null);
+                  setProjectName("");
+                  setProjectDescription("");
+                }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
     )
 }
 

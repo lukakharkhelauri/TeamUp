@@ -1303,6 +1303,21 @@
     }
 }
 
+.emptyMessage {
+    margin-top: 200px;
+    text-align: center;
+    font-size: 70px;
+    border-radius: 8px;
+    color: #737783; 
+    font-weight: 400;
+
+
+    @media (max-width: 768px) {
+        font-size: 20px;
+    }
+}
+
+
 .modalContent {
     max-height: 90vh;
     overflow-y: auto;

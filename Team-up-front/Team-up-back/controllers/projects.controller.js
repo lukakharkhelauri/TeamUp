@@ -14,52 +14,9 @@ const getAllProjects = async (req, res) => {
 
 const createProject = async (req, res) => {
     try {
-        const {
-            projectName,
-            projectType,
-            budget,
-            deadline,
-            clientId,
-            showAdvanced,
-            ...techTaskFields
-        } = req.body;
+        const projectData = req.body;
 
-        // Check basic required fields
-        if (!projectName || !projectType || !budget || !deadline || !clientId) {
-            return res.status(400).json({
-                success: false,
-                message: 'Missing required fields: projectName, projectType, budget, deadline, clientId'
-            });
-        }
-
-        // If showAdvanced is true, validate tech task fields
-        if (showAdvanced) {
-            const requiredTechFields = [
-                'problemSolution', 'targetUsers', 'expectedResults', 'projectGoals',
-                'improvements', 'specificResults', 'mainFunctions', 'functionUsage',
-                'userActions', 'designLook', 'designElements', 'contentOrganization',
-                'technologies', 'operatingSystems', 'hardwareRequirements', 'performanceStandards'
-            ];
-
-            const missingFields = requiredTechFields.filter(field => !techTaskFields[field]);
-            if (missingFields.length > 0) {
-                return res.status(400).json({
-                    success: false,
-                    message: `Missing required tech task fields: ${missingFields.join(', ')}`
-                });
-            }
-        }
-
-        const projectData = {
-            projectName,
-            projectType,
-            budget,
-            deadline,
-            clientId,
-            showAdvanced: showAdvanced || false,
-            ...(showAdvanced ? techTaskFields : {})
-        };
-
+        // Create the project without any role verification
         const newProject = new Project(projectData);
         const savedProject = await newProject.save();
         const populatedProject = await Project.findById(savedProject._id)

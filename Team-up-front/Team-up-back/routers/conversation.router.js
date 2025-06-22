@@ -1,22 +1,36 @@
 const express = require('express');
 const Conversation = require('../models/conversation.model');
 const Message = require('../models/message.model');
+const User = require('../models/users.model');
 const router = express.Router();
 
-router.get('/:userId', async (req, res) => {
-  const { userId } = req.params;
-  const conversations = await Conversation.find({ participants: userId })
-    .populate('participants', 'name email')
-    .sort({ createdAt: -1 });
-  res.json(conversations);
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const conversations = await Conversation.find({
+      participants: req.params.userId
+    })
+    .populate('participants', 'name email profilePicture')
+    .populate('lastMessage')
+    .sort({ updatedAt: -1 });
+    
+    res.json(conversations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 router.get('/:conversationId/messages', async (req, res) => {
-  const { conversationId } = req.params;
-  const messages = await Message.find({ conversation: conversationId })
-    .populate('sender', 'name email')
-    .sort({ timestamp: 1 });
-  res.json(messages);
+  try {
+    const messages = await Message.find({
+      conversation: req.params.conversationId
+    })
+    .populate('sender', 'name email profilePicture')
+    .sort({ createdAt: 1 });
+    
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 router.get('/:senderId/:receiverId/messages', async (req, res) => {
@@ -43,31 +57,68 @@ router.get('/:senderId/:receiverId/messages', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    try {
-        const { participants, isGroup, groupName } = req.body;
-        
-        const newConversation = new Conversation({
-            participants,
-            isGroup,
-            groupName
-        });
-
-        await newConversation.save();
-
-        // Create initial message to start the group
-        const initialMessage = new Message({
-            conversation: newConversation._id,
-            sender: participants[participants.length - 1], // client's ID (last in participants array)
-            content: `Group created for project: ${groupName}`
-        });
-
-        await initialMessage.save();
-
-        res.status(201).json({ success: true, conversation: newConversation });
-    } catch (error) {
-        console.error('Error creating conversation:', error);
-        res.status(500).json({ success: false, message: 'Error creating conversation' });
+  try {
+    const { participants, initialMessage, isGroup, groupName } = req.body;
+    
+    // Create conversation
+    const conversation = new Conversation({
+      participants,
+      lastMessage: null,
+      isGroup: isGroup || false,
+      groupName: groupName || null
+    });
+    await conversation.save();
+    
+    // If initial message is provided, create it
+    if (initialMessage) {
+      const message = new Message({
+        conversation: conversation._id,
+        sender: initialMessage.sender,
+        content: initialMessage.content
+      });
+      await message.save();
+      
+      // Update conversation's last message
+      conversation.lastMessage = message._id;
+      await conversation.save();
     }
+    
+    // Populate the conversation before sending response
+    const populatedConversation = await Conversation.findById(conversation._id)
+      .populate('participants', 'name email profilePicture')
+      .populate('lastMessage');
+    
+    res.status(201).json(populatedConversation);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+router.post('/:conversationId/messages', async (req, res) => {
+  try {
+    const { sender, content } = req.body;
+    
+    const message = new Message({
+      conversation: req.params.conversationId,
+      sender,
+      content
+    });
+    await message.save();
+    
+    // Update conversation's last message
+    await Conversation.findByIdAndUpdate(
+      req.params.conversationId,
+      { lastMessage: message._id }
+    );
+    
+    // Populate the message before sending response
+    const populatedMessage = await Message.findById(message._id)
+      .populate('sender', 'name email profilePicture');
+    
+    res.status(201).json(populatedMessage);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
 module.exports = router;

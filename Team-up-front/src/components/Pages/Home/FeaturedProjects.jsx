@@ -1,5 +1,5 @@
 import classes from "../../../modules/FeaturedProjects.module.scss";
-import clientProfile from "../../../assets/Home-page-pics/profile-pic.jpg";
+import profileImg from "../../../assets/Home-page-pics/profile-pic.jpg";
 import exampleProject from "../../../assets/Home-page-pics/exampleProject.png";
 import projectsImgOne from "../../../assets/Home-page-pics/firstProjectImg.png";
 import projectsImgTwo from "../../../assets/Home-page-pics/TwoProjectImg.png";
@@ -12,176 +12,124 @@ import "swiper/css/pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
-const FeaturedProjects = () => {
-    const ProjectCardOne = () => (
-        <div className={classes["projects"]}>
-            <img
-                className={classes["project-picture"]}
-                src={exampleProject}
-                alt="Project"
-            />
-            <div className={classes["project-description"]}>
-                <h4>DevNest</h4>
-                <p>
-                    DevNest is designed to be the ultimate platform for developers and clients alike — a seamless space where creativity meets opportunity.
-                    With an intuitive interface and smart collaboration tools, it makes project development smoother and faster. Easy money, baby.
-                </p>
-                <br />
-                <div className={classes["client-side"]}>
-                    <div>
-                        <FontAwesomeIcon
-                            icon={faUser}
-                            className={classes["client-profile"]}
-                        />
-                        <p>CodeCraft Innovations</p>
-                    </div>
-                    <h5>$1,275</h5>
-                </div>
+export const FeaturedProjects = () => {
+    const FirstCard = () => (
+        <div className={classes["card"]}>
+            <img src={exampleProject} className={classes["project-img"]}/>
+            <div className={classes["project-info"]}>
+                <h3>DevNest</h3>
+                <p>DevNest connects developers and clients in one seamless platform.</p>
             </div>
-        </div>
-    );
 
-    const ProjectCardTwo = () => (
-        <div className={classes["projects"]}>
-            <img
-                className={classes["project-picture"]}
-                src={projectsImgOne}
-                alt="Project"
-            />
-            <div className={classes["project-description"]}>
-                <h4>LaunchPad Pro</h4>
-                <p>
-                    LaunchPad Pro is the go-to platform for startups and freelancers.
-                    Whether you're a solo dev or a team with a dream, this site connects great ideas with the right talent.
-                    Built for simplicity, speed, and that sweet success.
-                </p>
-                <br />
-                <div className={classes["client-side"]}>
-                    <div>
-                        <FontAwesomeIcon
-                            icon={faUser}
-                            className={classes["client-profile"]}
-                        />
-                        <p>Visionary Ventures</p>
-                    </div>
-                    <h5>$1,549</h5>
+            <div className={classes["user-info"]}>
+                <div>
+                    <img src={profileImg} className={classes["profile-img"]}/>
+                    <h3>Vato Tabatadze</h3>
                 </div>
+                <h4>$1,275</h4>
             </div>
         </div>
-    );
+    )
 
-    const ProjectCardThree = () => (
-        <div className={classes["projects"]}>
-            <img
-                className={classes["project-picture"]}
-                src={projectsImgTwo}
-                alt="Project"
-            />
-            <div className={classes["project-description"]}>
-                <h4>SwiftCollab</h4>
-                <p>
-                  SwiftCollab is your all-in-one collaboration toolkit. From task management to real-time updates,
-                  it's made to boost productivity without the stress.
-                  For developers and clients looking for results — this is where the money flows.
-                </p>
-                <br />
-                <div className={classes["client-side"]}>
-                    <div>
-                        <FontAwesomeIcon
-                            icon={faUser}
-                            className={classes["client-profile"]}
-                        />
-                        <p>Quantum Edge Solutions</p>
-                    </div>
-                    <h5>$2,305</h5>
-                </div>
+    const SecondCard = () => (
+        <div className={classes["card"]}>
+            <img src={projectsImgOne} className={classes["project-img"]}/>
+            <div className={classes["project-info"]}>
+                <h3>LaunchPad Pro</h3>
+                <p>LaunchPad Pro empowers startups and freelancers to thrive.</p>
             </div>
-        </div>
-    );
 
-    const ProjectCardFourth = () => (
-        <div className={classes["projects"]}>
-            <img
-                className={classes["project-picture"]}
-                src={projectsImgThree}
-                alt="Project"
-            />
-            <div className={classes["project-description"]}>
-                <h4>PixelSync</h4>
-                <p>
-                PixelSync blends sleek design with powerful development tools, making it easy to build, launch, and grow.
-                 It’s the best site you didn’t know you needed — until now.
-                  Fast builds, fast cash.
-                </p>
-                <br />
-                <div className={classes["client-side"]}>
-                    <div>
-                        <FontAwesomeIcon
-                            icon={faUser}
-                            className={classes["client-profile"]}
-                        />
-                        <p>NeonCore Studios</p>
-                    </div>
-                    <h5>$1,990</h5>
+            <div className={classes["user-info"]}>
+                <div>
+                    <img src={profileImg} className={classes["profile-img"]}/>
+                    <h3>Hanibal Lecter</h3>
                 </div>
+                <h4>$1,549</h4>
             </div>
         </div>
-    );
+    )
+
+    const ThirdCard = () => (
+        <div className={classes["card"]}>
+            <img src={projectsImgTwo} className={classes["project-img"]}/>
+            <div className={classes["project-info"]}>
+                <h3>SwiftCollab</h3>
+                <p>SwiftCollab streamlines teamwork with powerful collaboration tools.</p>
+            </div>
+
+            <div className={classes["user-info"]}>
+                <div>
+                    <img src={profileImg} className={classes["profile-img"]}/>
+                    <h3>Walter White</h3>
+                </div>
+                <h4>$2,305</h4>
+            </div>
+        </div>
+    )
+
+    const FourthCard = () => (
+        <div className={classes["card"]}>
+            <img src={projectsImgThree} className={classes["project-img"]}/>
+            <div className={classes["project-info"]}>
+                <h3>PixelSync</h3>
+                <p>PixelSync fuses sleek design with dev power.</p>
+            </div>
+
+            <div className={classes["user-info"]}>
+                <div>
+                    <img src={profileImg} className={classes["profile-img"]}/>
+                    <h3>Tony Stark</h3>
+                </div>
+                <h4>$1,990</h4>
+            </div>
+        </div>
+    )
 
     return (
         <>
-            <center>
-                <h1 className={classes["featured-projects-title"]}>
-                    Featured Projects
-                </h1>
-            </center>
-            <br />
-            <br />
-
-            <div className={classes["projects-container"]}>
+            <div className={classes["card-container"]}>
                 <div className={classes["desktop-view"]}>
                     <div className={classes["projects-grid"]}>
-                        <ProjectCardOne />
-                        <ProjectCardTwo />
-                        <ProjectCardThree />
-                        <ProjectCardFourth />
+                        <FirstCard />
+                        <SecondCard />
+                        <ThirdCard />
+                        <FourthCard />
                     </div>
                 </div>
-
                 <div className={classes["mobile-view"]}>
                     <Swiper
                         modules={[Navigation, Pagination]}
                         spaceBetween={20}
                         slidesPerView={1}
                         navigation
-                        pagination={{ clickable: true }}
+                        pagination={{clickable: true}}
                         className={classes["mobile-swiper"]}
                     >
                         <SwiperSlide>
                             <div className={classes["slide-content"]}>
-                                <ProjectCardOne />
+                                <FirstCard/>
                             </div>
                         </SwiperSlide>
                         <SwiperSlide>
                             <div className={classes["slide-content"]}>
-                                <ProjectCardTwo />
+                                <SecondCard/>
                             </div>
                         </SwiperSlide>
                         <SwiperSlide>
                             <div className={classes["slide-content"]}>
-                                <ProjectCardThree />
+                                <ThirdCard/>
                             </div>
                         </SwiperSlide>
                         <SwiperSlide>
                             <div className={classes["slide-content"]}>
-                                <ProjectCardFourth />
+                                <FourthCard/>
                             </div>
                         </SwiperSlide>
                     </Swiper>
                 </div>
             </div>
         </>
-    );
-};
+    )
+}
 
 export default FeaturedProjects;

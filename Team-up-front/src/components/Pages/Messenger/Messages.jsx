@@ -25,106 +25,147 @@ const Messages = ({ selectedConversation }) => {
     scrollToBottom();
   }, [messages]);
 
-useEffect(() => {
-  const fetchUserIds = async () => {
-    try {
-      const response = await fetch("http://localhost:5005/users");
-      const data = await response.json();
-
-      if (data.success) {
-        const currentUser = data.users.find((user) => user.name === storedUser);
+  useEffect(() => {
+    const fetchUserIds = async () => {
+      try {
+        const currentUser = JSON.parse(localStorage.getItem("user"));
         if (currentUser) {
-          setCurrentUserId(currentUser._id);
+          setCurrentUserId(currentUser._id || currentUser.id);
         }
 
         if (selectedConversation) {
-          console.log("Selected Conversation:", selectedConversation);
-
           if (selectedConversation.isGroup) {
             const participants = selectedConversation.participants || [];
             if (participants.length > 0) {
-              const selectedUserData = participants.filter(user => user._id !== currentUser._id)[0];
+              const selectedUserData = participants[0];
               if (selectedUserData) {
-                setSelectedUserId(selectedUserData._id);
+                setSelectedUserId(selectedUserData._id || selectedUserData.id);
               }
-            } else {
-              console.error("No participants found in the selected group conversation.");
             }
           } else {
             setSelectedUserId(selectedConversation._id);
           }
         }
-      }
-    } catch (error) {
-      console.error("Error fetching user IDs:", error);
-    }
-  };
-
-  fetchUserIds();
-}, [storedUser, selectedConversation]);
-
-  
-
-useEffect(() => {
-  const newSocket = io("http://localhost:5005", {
-    withCredentials: true,
-  });
-  setSocket(newSocket);
-
-  return () => newSocket.disconnect();
-}, []);
-
-useEffect(() => {
-  if (selectedUserId && socket && currentUserId) {
-    const fetchMessages = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5005/conversations/${selectedConversation._id}/messages`
-        );
-        const data = await response.json();
-        setMessages(data);
       } catch (error) {
-        console.error("Error fetching messages:", error);
+        console.error("Error fetching user IDs:", error);
       }
     };
 
-    fetchMessages();
+    fetchUserIds();
+  }, [selectedConversation]);
 
-    if (!selectedConversation.isGroup) {
-      socket.emit('join', selectedUserId);
-    } else {
-      socket.emit('joinConversation', selectedConversation._id);
+  useEffect(() => {
+    if (selectedConversation) {
+      // Get messages from localStorage
+      const allMessages = JSON.parse(localStorage.getItem('messages') || '[]');
+      const conversationMessages = allMessages.filter(msg => msg.conversation === selectedConversation._id);
+      
+      // Add static messages if no messages exist
+      if (conversationMessages.length === 0) {
+        const currentUser = JSON.parse(localStorage.getItem("user"));
+        const staticMessages = [
+          {
+            _id: "static_msg_1",
+            conversation: selectedConversation._id,
+            sender: {
+              _id: selectedUserId,
+              name: selectedConversation.isGroup ? "John Smith" : selectedConversation.name
+            },
+            content: "Yes, I'll schedule a sync-up for tomorrow.",
+            createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+            updatedAt: new Date(Date.now() - 3600000).toISOString()
+          },
+          {
+            _id: "static_msg_2",
+            conversation: selectedConversation._id,
+            sender: {
+              _id: currentUser._id || currentUser.id,
+              name: currentUser.name
+            },
+            content: "Also, the backend is deployed. You can start testing anytime.",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          }
+        ];
+        
+        // Save static messages to localStorage
+        localStorage.setItem('messages', JSON.stringify([...allMessages, ...staticMessages]));
+        setMessages(staticMessages);
+      } else {
+        setMessages(conversationMessages);
+      }
     }
-  }
-}, [selectedUserId, socket, currentUserId, selectedConversation]);
+  }, [selectedConversation, selectedUserId]);
 
-useEffect(() => {
-  if (socket) {
-    socket.on("receiveMessage", (newMessage) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+  useEffect(() => {
+    const newSocket = io("http://localhost:5005", {
+      withCredentials: true,
     });
-  }
+    setSocket(newSocket);
 
-  return () => {
+    return () => newSocket.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (selectedUserId && socket && currentUserId) {
+      const fetchMessages = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5005/conversations/${selectedConversation._id}/messages`
+          );
+          const data = await response.json();
+          setMessages(data);
+        } catch (error) {
+          console.error("Error fetching messages:", error);
+        }
+      };
+
+      fetchMessages();
+
+      if (!selectedConversation.isGroup) {
+        socket.emit('join', selectedUserId);
+      } else {
+        socket.emit('joinConversation', selectedConversation._id);
+      }
+    }
+  }, [selectedUserId, socket, currentUserId, selectedConversation]);
+
+  useEffect(() => {
     if (socket) {
-      socket.off("receiveMessage");
+      socket.on("receiveMessage", (newMessage) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("receiveMessage");
+      }
+    };
+  }, [socket]);
+
+  const handleSendMessage = () => {
+    if (message.trim() && selectedConversation && currentUserId) {
+      const newMessage = {
+        _id: `msg_${Date.now()}`,
+        conversation: selectedConversation._id,
+        sender: {
+          _id: currentUserId,
+          name: JSON.parse(localStorage.getItem("user")).name
+        },
+        content: message,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      // Save to localStorage
+      const allMessages = JSON.parse(localStorage.getItem('messages') || '[]');
+      localStorage.setItem('messages', JSON.stringify([...allMessages, newMessage]));
+      
+      setMessages(prev => [...prev, newMessage]);
+      setMessage("");
     }
   };
-}, [socket]);
-
-const handleSendMessage = () => {
-  if (socket && message.trim() && selectedUserId && currentUserId) {
-    socket.emit('sendMessage', {
-      senderId: currentUserId,
-      conversationId: selectedConversation._id,
-      content: message,
-      isGroup: selectedConversation.isGroup,
-    });
-    setMessage("");
-  }
-};
-
-
 
   return (
     <div className={classes["messages-tab"]}>
@@ -141,7 +182,7 @@ const handleSendMessage = () => {
                 <div 
                   key={index}
                   className={msg.sender._id === currentUserId ? classes["person-1"] : classes["person-2"]}
-                  >
+                >
                   <p className={classes["sender-name"]}>{msg.sender.name}</p> 
                   <p>{msg.content}</p>
                 </div>

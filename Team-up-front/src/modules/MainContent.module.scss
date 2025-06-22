@@ -1,194 +1,51 @@
-.main-container {
+.main-content {
   display: flex;
-  max-width: 191dvh;
-  background-color: #ffffff;
-  margin-left: 52px;
-  margin-right: 52px;
-  padding: 50px 0px;
-  gap: 150px;
-  margin-top:70px;
-
-  @media screen and (max-width: 431px) {
-    max-width: 58dvh;
-    display: grid;
-    gap: 50px;
-    margin: 70px auto 0;
-    padding: 0 15px;
-  }
+  padding: 50px 40px 50px 70px;
+  justify-content: space-between;
+  align-items: center;
 
   .left-side {
-    display: grid;
     width: 600px;
+    height: 50vh;
+    display: grid;
+    //gap: 0px;
 
-    @media screen and (max-width: 431px) {
-      width: 41dvh;
-      text-align: center;
-    }
-
-    .bottom-text{
-      margin-top:1rem;
-    }
-
-    p {
-      color: #666666;
-
-      @media screen and (max-width: 431px) {
-        font-size: 14px;
-        width: 100%;
-        margin: 0 auto;
-      }
-    }
-
-    h1 {
+    .main-title {
       font-size: 2.5rem;
-      text-transform: capitalize;
-      
-      @media screen and (max-width: 431px) {
-        font-size: 1.5rem;
-        width: 100%;
-        margin: 0 auto;
-      }
 
       mark {
-        background-color: #F0CD3B;
-        border-radius: 5px;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-        padding: 1dvh;
+        background-color: #547792;
+        color: #ECEFCA;
+        padding: 5px;
+        border-radius: 7px;
       }
     }
 
     .result-side {
       display: flex;
       gap: 50px;
-      max-width: 70dvh;
-
-      @media screen and (max-width: 431px) {
-        margin-top:20px;
-      }
-      
-
-      @media screen and (max-width: 431px) {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        gap: 20px;
-        width: 100%;
-      }
 
       div {
+        background-color: #547792;
+        width: 16dvh;
+        height: 8.5dvh;
+        border-radius: 7px;
+        color: #ECEFCA;
+        font-weight: 500;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background-color: #F0CD3B;
-        border: 1px solid black;
-        padding: 7px;
-        margin-top:70px;
-        border-radius: 8px;
-
-        @media screen and (max-width: 431px) {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          width: 80%;
-          margin: 0 auto;
-        }
-
-        h2 {
-          font-size: 2rem;
-        }
-
-        p {
-          color: #1d1d1d;
-
-          @media screen and (max-width: 431px) {
-            transform: none;
-          }
-        }
       }
     }
-
-    .two-btn {
-      display: flex;
-      margin-top:30px;
-      gap: 15px;
-
-      @media screen and (max-width: 431px) {
-        justify-content: center;
-        width: 100%;
-      }
-
-      .blue-btn {
-        background-color: #efd135;
-        border: none;
-        border-radius: 7px;
-        width: 120px;
-        height: 50px;
-        color: #ffffff;
-        cursor: pointer;
-        transition: all 0.3s;
-
-        &:hover {
-          background-color: #bda21d;
-        }
-      }
-
-
-      .white-btn {
-        background-color: #fffaec;
-        border: 1px solid #000;
-        border-radius: 7px;
-        width: 120px;
-        height: 50px;
-        color: #000;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-
-      .white-btn:hover {
-        background-color: #ededed;
-        border: 1px solid #ededed;
-        color: #000;
-      }
-    }
-
   }
 
   .right-side {
-    width: 82dvh;
+    width: 89dvh;
 
-    @media screen and (max-width: 431px) {
-      width: 100%;
-    }
-
-    .right-side_img {
+    img {
       width: 89dvh;
-      background-color: #fff;
       border-radius: 10px;
-
-      @media screen and (max-width: 431px) {
-        width: 100%;
-        margin: 0 auto;
-      }
-
-      img {
-        width: 100%;
-        border-radius: 10px;
-
-        @media screen and (max-width: 2100px) and (min-width: 600px) {
-          width: 100%;
-          margin-left:20dvh;
-        }
-
-        @media screen and (max-width: 431px) {
-          width: 100%;
-          display: block;
-          margin: 0 auto;
-        }
-      }
     }
   }
-
 }
