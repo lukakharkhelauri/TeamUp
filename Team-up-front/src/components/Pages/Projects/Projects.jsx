@@ -73,7 +73,7 @@ const Projects = () => {
         }
 
         try {
-            const response = await getRequest('/api/projects');
+            const response = await getRequest('/projects');
             const allProjects = response.projects || [];
 
             const filteredProjects = allProjects.filter(project => {
@@ -256,7 +256,7 @@ const Projects = () => {
             console.log("Sending project data:", projectData);
 
             // Create the project
-            const projectResponse = await postRequest('/api/projects', projectData);
+            const projectResponse = await postRequest('/projects', projectData);
 
             // Create the conversation group
             const conversationData = {
@@ -265,7 +265,7 @@ const Projects = () => {
                 groupName: `${formData.projectName} - ${teamName} Group`
             };
 
-            await postRequest('/api/conversations', conversationData);
+            await postRequest('/conversations', conversationData);
 
             setShowCreateForm(false);
             setFormData({

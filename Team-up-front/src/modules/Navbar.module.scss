@@ -1,4 +1,5 @@
 .header {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -10,13 +11,48 @@
   -webkit-box-shadow: 1px 1px 24px 0px rgba(112,112,112,0.75);
   -moz-box-shadow: 1px 1px 24px 0px rgba(112,112,112,0.75);
 
+  @media (max-width: 1024px) {
+    padding: 0px 10px 0px 10px;
+  }
+
   .left-side {
     align-items: center;
     display: flex;
     gap: 120px;
+    width: 100%;
+
+    @media (max-width: 1024px) {
+      gap: 0px;
+    }
 
     img {
       width: 200px;
+    }
+
+    .active {
+      display: none;
+      position: absolute;
+      width: 100%;
+      height: 80vh;
+      justify-content: start;
+      align-items: start;
+      background-color: #333446;
+      transform: translate(-10px, 412px);
+      padding: 50px;
+      z-index: 100;
+      transition: all 0.3s;
+
+      @media (max-width: 1024px) {
+        display: grid !important;
+      }
+
+      @media (max-width: 530px) {
+        padding: 20px;
+      }
+
+      .menu {
+        display: grid !important;
+      }
     }
 
     .li-links {
@@ -26,6 +62,15 @@
       list-style-type: none;
       font-size: 17px;
       font-weight: 500;
+
+      @media (max-width: 1200px) {
+        font-size: 16px;
+        gap: 20px;
+      }
+
+      @media (max-width: 1024px) {
+        display: none;
+      }
 
       li {
         transition: all 0.3s;
@@ -45,7 +90,8 @@
     gap: 20px;
 
     button {
-      padding: 12px 25px;
+      width: 100px;
+      height: 40px;
       border-radius: 8px;
       border: 1px solid #948979;
       background-color: #393E46;
@@ -54,6 +100,10 @@
       font-weight: 550;
       color: #DFD0B8;
       transition: all 0.3s;
+
+      @media (max-width: 1024px) {
+        display: none;
+      }
 
       &:hover {
         border: 1px solid #393E46;
@@ -77,6 +127,14 @@
         background-color: #948979;
       }
     }
+
+    .hamburger {
+      display: none;
+      
+      @media (max-width: 1024px) {
+        display: block;
+      }
+    }
   }
 
   .dropdown-menu {
@@ -87,6 +145,46 @@
     padding: 14px;
     border-radius: 7px;
     gap: 20px;
+
+    @media (max-width: 1680px) {
+      transform: translate(1509px, 125px);
+    }
+
+    @media (max-width: 1440px) {
+      transform: translate(1270px, 125px);
+    }
+
+    @media (max-width: 1280px) {
+      transform: translate(1110px, 125px);
+    }
+
+    @media (max-width: 1024px) {
+      transform: translate(850px, 125px);
+    }
+
+    @media (max-width: 992px) {
+      transform: translate(820px, 125px);
+    }
+
+    @media (max-width: 768px) {
+      transform: translate(400px, 125px);
+    }
+
+    @media (max-width: 490px) {
+      transform: translate(310px, 125px);
+    }
+
+    @media (max-width: 470px) {
+      transform: translate(300px, 125px);
+    }
+
+    @media (max-width: 430px) {
+      transform: translate(260px, 125px);
+    }
+
+    @media (max-width: 365px) {
+      transform: translate(190px, 125px);
+    }
 
       li {
         font-size: 17px;

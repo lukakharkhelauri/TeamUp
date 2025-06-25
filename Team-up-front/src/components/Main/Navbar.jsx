@@ -136,6 +136,7 @@ const Navbar = () => {
         </li>
         <li><a onClick={() => navigate("/profile")}>Profile</a></li>
         <li><a onClick={() => navigate("/Messenger")}>Messenger</a></li>
+        <li><a onClick={() => navigate("/FindDevelopers")}>Find developers</a></li>
         <li><a onClick={() => navigate("/Request")}>Requests</a></li>
         <li><a>Support</a></li>
         {!isUserSignedIn && (
