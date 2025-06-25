@@ -3,13 +3,12 @@
   justify-content: start;
   gap: 120px;
   align-items: start;
-  padding: 100px 50px;
+  padding: 100px 50px 100px 50px;
 
-  @media (max-width: 991px) {
-    flex-direction: column;
-    gap: 40px;
-    padding: 50px 20px;
-  }
+@media (max-width: 1024px) {
+  display: grid;
+  justify-content: center;
+}
 
   .filter-container {
     width: 360px;
@@ -19,14 +18,6 @@
     padding: 30px;
     gap: 30px;
     border-radius: 10px;
-    position: sticky;
-    top: 20px;
-
-    @media (max-width: 991px) {
-      width: 100%;
-      position: static;
-      padding: 20px;
-    }
 
     .filter-options {
       display: flex;
@@ -45,11 +36,6 @@
         &:hover {
           background-color: #DFD0B8;
           color: #222831;
-        }
-
-        &.selected {
-          background-color: #efd135;
-          color: #000;
         }
       }
     }
@@ -74,39 +60,18 @@
   }
 
   .filtered-devs {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
-    flex: 1;
-
-    // Responsive grid layout
-    @media (min-width: 1920px) {
-      grid-template-columns: repeat(5, 1fr);
-    }
-
-    @media (min-width: 1680px) and (max-width: 1919px) {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    @media (min-width: 1440px) and (max-width: 1679px) {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    @media (min-width: 1024px) and (max-width: 1439px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media (max-width: 1023px) {
-      grid-template-columns: repeat(1, 1fr);
-    }
 
     .devs {
-      width: 100%;
+      width: 350px;
+      height: 350px;
       display: grid;
       background-color: #DFD0B8;
       gap: 20px;
       padding: 20px;
       border-radius: 10px;
-      min-height: 350px;
 
       .dev-flex {
         display: flex;
@@ -114,16 +79,15 @@
         align-items: center;
         gap: 20px;
 
-        img {
-          width: 45px;
-          height: 45px;
-          border-radius: 50%;
-        }
-
         .flex-option {
           h4 {
             color: green;
           }
+        }
+
+        img {
+          width: 45px;
+          height: 45px;
         }
       }
 
@@ -158,4 +122,222 @@
       }
     }
   }
+}
+
+.no-results {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  p {
+    font-size: 28px;
+  }
+
+  button {
+    width: 300px;
+    height: 45px;
+    border-radius: 8px;
+    border: 1px solid #948979;
+    background-color: #393E46;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 550;
+    color: #DFD0B8;
+    transition: all 0.3s;
+
+    &:hover {
+      border: 1px solid #393E46;
+      background-color: #DFD0B8;
+      color: #222831;
+    }
+  }
+}
+
+
+
+.request-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  @media (min-width: 768px) {
+      max-width: 500px;
+  }
+
+  .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+
+      @media (min-width: 768px) {
+          max-width: 500px;
+      }
+
+      @media (max-width: 576px) {
+          width: 95%;
+          padding: 15px;
+          margin: 10px;
+      }
+
+      h3 {
+          margin-bottom: 20px;
+      }
+
+      input, textarea {
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 15px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+
+          &:focus {
+              outline: none;
+              border-color: #efd135;
+          }
+      }
+
+      textarea {
+          height: 100px;
+          resize: vertical;
+      }
+
+      .modal-buttons {
+          display: flex;
+          gap: 10px;
+          justify-content: flex-end;
+
+          button {
+              padding: 8px 16px;
+              border-radius: 4px;
+              cursor: pointer;
+
+              &:first-child {
+                  background-color: #efd135;
+                  color: white;
+                  border: none;
+
+                  &:hover {
+                      background-color: #bda21d;
+                  }
+              }
+
+              &:last-child {
+                  background-color: white;
+                  border: 1px solid #ddd;
+
+                  &:hover {
+                      background-color: #f5f5f5;
+                  }
+              }
+          }
+      }
+  }
+}
+
+.search-box {
+padding: 1rem;
+border-radius: 8px;
+
+input {
+    width: 100%;
+    background-color: #333446;
+    padding: 0.75rem;
+    border: 1px solid #393E46;
+    border-radius: 6px;
+    color: #B8CFCE;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+
+    &:focus {
+        outline: none;
+        border-color: #DFD0B8;
+        box-shadow: 0 0 10px #948979;
+    }
+}
+
+.price-hint {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+}
+
+.filter-btn {
+width: 100%;
+padding: 1rem;
+background-color: #efd135;
+color: #000;
+border: none;
+border-radius: 8px;
+font-size: 1rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s ease;
+margin-top: 1.5rem;
+
+&:hover {
+    background-color: #bda21d;
+    transform: translateY(-2px);
+}
+}
+
+.error-message {
+background-color: #fee2e2;
+border: 1px solid #ef4444;
+color: #991b1b;
+padding: 12px 16px;
+border-radius: 8px;
+margin: 0 auto 20px;
+max-width: 600px;
+display: flex;
+align-items: center;
+gap: 12px;
+animation: slideIn 0.3s ease-out;
+
+@media (min-width: 768px) {
+    max-width: 600px;
+}
+
+.error-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+}
+
+@keyframes slideIn {
+from {
+    transform: translateY(-20px);
+    opacity: 0;
+}
+to {
+    transform: translateY(0);
+    opacity: 1;
+}
+}
+
+.footer {
+margin-top: auto;
+}
+
+.text-ellipsis {
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.word-wrap {
+word-wrap: break-word;
+word-break: break-all;
 }

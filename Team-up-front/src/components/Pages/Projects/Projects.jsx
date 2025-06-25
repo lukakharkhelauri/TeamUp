@@ -141,14 +141,12 @@ const Projects = () => {
             const response = await getRequest('/users');
             console.log("API Response:", response);
             
-            // Check if response exists
             if (!response) {
                 console.error("API response is empty or undefined");
                 setIsLoading(false);
                 return;
             }
             
-            // Check if response.users exists
             if (!response.users) {
                 console.error("API response does not contain users data. Response structure:", JSON.stringify(response));
                 setIsLoading(false);
@@ -255,10 +253,8 @@ const Projects = () => {
 
             console.log("Sending project data:", projectData);
 
-            // Create the project
             const projectResponse = await postRequest('/projects', projectData);
 
-            // Create the conversation group
             const conversationData = {
                 participants: [...teamMembers.map(dev => dev._id), signedInUser.id],
                 isGroup: true,
@@ -266,6 +262,9 @@ const Projects = () => {
             };
 
             await postRequest('/conversations', conversationData);
+
+            const updatedConversations = await getRequest(`/conversations/user/${signedInUser.id}`);
+            localStorage.setItem("conversations", JSON.stringify(updatedConversations));
 
             setShowCreateForm(false);
             setFormData({

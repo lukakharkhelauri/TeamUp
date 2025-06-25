@@ -1,5 +1,5 @@
 import classes from "../../../modules/FeaturedProjects.module.scss";
-import profileImg from "../../../assets/Home-page-pics/profile-pic.jpg";
+import profileImg from "../../../assets/Home-page-pics/profile-user-darkblue.png";
 import exampleProject from "../../../assets/Home-page-pics/exampleProject.png";
 import projectsImgOne from "../../../assets/Home-page-pics/firstProjectImg.png";
 import projectsImgTwo from "../../../assets/Home-page-pics/TwoProjectImg.png";

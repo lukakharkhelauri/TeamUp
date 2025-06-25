@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import classes from "../../modules/Navbar.module.scss";
-import profileImg from "../../assets/Home-page-pics/profile-pic.jpg";
+import profileImg from "../../assets/Home-page-pics/profile-user.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/team-up-logo.png";

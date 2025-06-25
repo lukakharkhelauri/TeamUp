@@ -16,7 +16,6 @@ const createProject = async (req, res) => {
     try {
         const projectData = req.body;
 
-        // Create the project without any role verification
         const newProject = new Project(projectData);
         const savedProject = await newProject.save();
         const populatedProject = await Project.findById(savedProject._id)

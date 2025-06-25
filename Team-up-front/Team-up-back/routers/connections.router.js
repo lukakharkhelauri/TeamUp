@@ -8,7 +8,6 @@ router.get('/user/:userId', async (req, res) => {
         const { userId } = req.params;
         console.log("Fetching connections for user:", userId);
 
-        // Find connections where the user is either developer or client
         const connections = await Connection.find({
             $or: [
                 { developerId: userId },
@@ -39,7 +38,6 @@ router.post('/', async (req, res) => {
         const { developerId, clientId, status } = req.body;
         console.log("Creating connection with:", { developerId, clientId, status });
 
-        // Check if users exist
         const [developer, client] = await Promise.all([
             User.findById(developerId),
             User.findById(clientId)
@@ -53,7 +51,7 @@ router.post('/', async (req, res) => {
             });
         }
 
-        // Check for existing connection
+
         const existingConnection = await Connection.findOne({
             $or: [
                 { developerId, clientId },
@@ -70,7 +68,6 @@ router.post('/', async (req, res) => {
             });
         }
 
-        // Create new connection
         const newConnection = new Connection({
             developerId,
             clientId,

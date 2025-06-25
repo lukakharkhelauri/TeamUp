@@ -14,64 +14,77 @@ const UserMessages = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-        try {
-            setLoading(true);
-            
-            const currentUser = JSON.parse(localStorage.getItem("user"));
-            
-            if (!currentUser) {
-                console.error("No user found in localStorage");
-                setLoading(false);
-                return;
-            }
-            
-            const conversations = JSON.parse(localStorage.getItem('conversations') || '[]');
-            
-            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
-            
+      try {
+        setLoading(true);
 
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            
-            const userConversations = conversations.filter(conv => 
-                conv.participants.includes(currentUser.id || currentUser._id)
-            );
-            
-            const processedConversations = userConversations.map(conv => {
-                const lastMessage = messages
-                    .filter(msg => msg.conversation === conv._id)
-                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
-                
-                const participantDetails = conv.participants
-                    .filter(id => id !== (currentUser.id || currentUser._id))
-                    .map(id => {
-                        const user = users.find(u => u._id === id || u.id === id);
-                        return user || { name: 'Unknown User', _id: id };
-                    });
-                
-                return {
-                    ...conv,
-                    lastMessage,
-                    participants: participantDetails
-                };
-            });
-            
-            processedConversations.sort((a, b) => {
-                const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(a.createdAt);
-                const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(b.createdAt);
-                return dateB - dateA;
-            });
-            
-            console.log("Processed conversations:", processedConversations);
-            setUsersData(processedConversations);
-            setLoading(false);
-        } catch (error) {
-            console.error("Error fetching conversations:", error);
-            setLoading(false);
+        const currentUser = JSON.parse(localStorage.getItem("user"));
+        console.log("Current user:", currentUser);
+
+        if (!currentUser) {
+          console.error("No user found in localStorage");
+          setLoading(false);
+          return;
         }
+
+        const userId = String(currentUser.id);
+
+        const response = await fetch(`http://localhost:5005/conversations/user/${userId}`);
+        const conversations = await response.json();
+
+
+        if (!Array.isArray(conversations)) {
+          console.error("Unexpected conversations format:", conversations);
+          setLoading(false);
+          return;
+        }
+
+        const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+
+
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+        const userConversations = conversations.filter(conv =>
+          conv.participants.some(p => (p._id === userId || p.id === userId))
+        );
+
+        console.log(JSON.parse(localStorage.getItem("conversations")));
+
+        const processedConversations = userConversations.map(conv => {
+          const lastMessage = messages
+            .filter(msg => msg.conversation === conv._id)
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+
+          const participantDetails = conv.participants
+            .filter(id => id !== (currentUser.id || currentUser._id))
+            .map(id => {
+              const user = users.find(u => u._id === id || u.id === id);
+              return user || { name: 'Unknown User', _id: id };
+            });
+
+          return {
+            ...conv,
+            lastMessage,
+            participants: participantDetails
+          };
+        });
+
+        processedConversations.sort((a, b) => {
+          const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(a.createdAt);
+          const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(b.createdAt);
+          return dateB - dateA;
+        });
+
+        console.log("Processed conversations:", processedConversations);
+        setUsersData(processedConversations);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching conversations:", error);
+        setLoading(false);
+      }
     };
 
     fetchData();
-}, []);
+  }, []);
 
   const handleSelectConversation = (conversation) => {
     setSelectedConversation(conversation);
@@ -90,7 +103,7 @@ const UserMessages = () => {
     <>
       <NavBar />
       <div className={classes["container"]}>
-        <div 
+        <div
           className={`${classes["burger-menu"]} ${isSidebarOpen ? classes["active"] : ""}`}
           onClick={toggleSidebar}
         >
@@ -98,12 +111,12 @@ const UserMessages = () => {
           <span></span>
           <span></span>
         </div>
-        
-        <div 
+
+        <div
           className={`${classes["overlay"]} ${isSidebarOpen ? classes["active"] : ""}`}
           onClick={closeSidebar}
         ></div>
-        
+
         <aside className={`${classes["sidebar"]} ${isSidebarOpen ? classes["active"] : ""}`}>
           <div className={classes["for-border-bottom"]}>
             <h1 className={classes["logo"]}>Messages</h1>
@@ -120,9 +133,8 @@ const UserMessages = () => {
               usersData.map((conversation) => (
                 <div
                   key={conversation._id}
-                  className={`${classes["contact-users"]} ${
-                    selectedConversation?._id === conversation._id ? classes["selected"] : ""
-                  }`}
+                  className={`${classes["contact-users"]} ${selectedConversation?._id === conversation._id ? classes["selected"] : ""
+                    }`}
                   onClick={() => handleSelectConversation(conversation)}
                 >
                   <FontAwesomeIcon icon={faUser} className={classes["profile-icon"]} />

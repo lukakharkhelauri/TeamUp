@@ -35,7 +35,6 @@ const sendRequest = async (req, res) => {
             });
         }
 
-        // Check for existing pending request
         const existingRequest = await Request.findOne({
             userId: userId,
             developerId: developerId,
@@ -148,7 +147,7 @@ const checkExistingRequest = async (req, res) => {
         const existingRequest = await Request.findOne({
             userId: userId,
             developerId: developerId,
-            status: "pending" // Only check for pending requests
+            status: "pending" 
         });
 
         console.log("Checking existing request:", { userId, developerId, exists: !!existingRequest });

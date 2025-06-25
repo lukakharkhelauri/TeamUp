@@ -41,6 +41,13 @@ const Request = () => {
             console.log("Creating connection with data:", connectionData);
             await postRequest('/connections', connectionData);
 
+            const conversationData = {
+                participants: [signedInUser.id, requestData.userId],
+                isGroup: true,
+                groupName: requestData.projectName ? `${requestData.projectName} Group` : `Request Group`
+            };
+            await postRequest('/conversations', conversationData);
+
             const updatedRequests = requests.filter(req => req._id !== requestId);
             const updatedFilteredRequests = filteredRequests.filter(req => req._id !== requestId);
             

@@ -8,10 +8,8 @@ const Chat = () => {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                // Get messages from localStorage
                 const allMessages = JSON.parse(localStorage.getItem('messages') || '[]');
                 
-                // Filter messages for current conversation
                 const conversationMessages = allMessages
                     .filter(msg => msg.conversation === conversation._id)
                     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
@@ -35,9 +33,8 @@ const Chat = () => {
         try {
             const currentUser = JSON.parse(localStorage.getItem("user"));
             
-            // Create new message object
             const messageData = {
-                _id: Date.now().toString(), // Generate a unique ID
+                _id: Date.now().toString(),
                 conversation: conversation._id,
                 sender: currentUser.id || currentUser._id,
                 content: newMessage.trim(),
@@ -45,16 +42,11 @@ const Chat = () => {
                 updatedAt: new Date().toISOString()
             };
             
-            // Get existing messages
             const existingMessages = JSON.parse(localStorage.getItem('messages') || '[]');
             
-            // Add new message
             existingMessages.push(messageData);
-            
-            // Save back to localStorage
             localStorage.setItem('messages', JSON.stringify(existingMessages));
             
-            // Update conversation's last message
             const conversations = JSON.parse(localStorage.getItem('conversations') || '[]');
             const conversationIndex = conversations.findIndex(c => c._id === conversation._id);
             
@@ -63,7 +55,6 @@ const Chat = () => {
                 localStorage.setItem('conversations', JSON.stringify(conversations));
             }
             
-            // Update local state
             setMessages(prev => [...prev, messageData]);
             setNewMessage('');
             
@@ -74,7 +65,7 @@ const Chat = () => {
 
     return (
         <div>
-            {/* Render your component content here */}
+            
         </div>
     );
 };

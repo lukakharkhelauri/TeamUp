@@ -60,7 +60,6 @@ router.post('/', async (req, res) => {
   try {
     const { participants, initialMessage, isGroup, groupName } = req.body;
     
-    // Create conversation
     const conversation = new Conversation({
       participants,
       lastMessage: null,
@@ -69,7 +68,6 @@ router.post('/', async (req, res) => {
     });
     await conversation.save();
     
-    // If initial message is provided, create it
     if (initialMessage) {
       const message = new Message({
         conversation: conversation._id,
@@ -77,13 +75,11 @@ router.post('/', async (req, res) => {
         content: initialMessage.content
       });
       await message.save();
-      
-      // Update conversation's last message
+
       conversation.lastMessage = message._id;
       await conversation.save();
     }
     
-    // Populate the conversation before sending response
     const populatedConversation = await Conversation.findById(conversation._id)
       .populate('participants', 'name email profilePicture')
       .populate('lastMessage');
@@ -105,13 +101,11 @@ router.post('/:conversationId/messages', async (req, res) => {
     });
     await message.save();
     
-    // Update conversation's last message
     await Conversation.findByIdAndUpdate(
       req.params.conversationId,
       { lastMessage: message._id }
     );
-    
-    // Populate the message before sending response
+
     const populatedMessage = await Message.findById(message._id)
       .populate('sender', 'name email profilePicture');
     

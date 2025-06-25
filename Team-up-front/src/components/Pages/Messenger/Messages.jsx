@@ -55,49 +55,6 @@ const Messages = ({ selectedConversation }) => {
   }, [selectedConversation]);
 
   useEffect(() => {
-    if (selectedConversation) {
-      // Get messages from localStorage
-      const allMessages = JSON.parse(localStorage.getItem('messages') || '[]');
-      const conversationMessages = allMessages.filter(msg => msg.conversation === selectedConversation._id);
-      
-      // Add static messages if no messages exist
-      if (conversationMessages.length === 0) {
-        const currentUser = JSON.parse(localStorage.getItem("user"));
-        const staticMessages = [
-          {
-            _id: "static_msg_1",
-            conversation: selectedConversation._id,
-            sender: {
-              _id: selectedUserId,
-              name: selectedConversation.isGroup ? "John Smith" : selectedConversation.name
-            },
-            content: "Yes, I'll schedule a sync-up for tomorrow.",
-            createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
-            updatedAt: new Date(Date.now() - 3600000).toISOString()
-          },
-          {
-            _id: "static_msg_2",
-            conversation: selectedConversation._id,
-            sender: {
-              _id: currentUser._id || currentUser.id,
-              name: currentUser.name
-            },
-            content: "Also, the backend is deployed. You can start testing anytime.",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
-        ];
-        
-        // Save static messages to localStorage
-        localStorage.setItem('messages', JSON.stringify([...allMessages, ...staticMessages]));
-        setMessages(staticMessages);
-      } else {
-        setMessages(conversationMessages);
-      }
-    }
-  }, [selectedConversation, selectedUserId]);
-
-  useEffect(() => {
     const newSocket = io("http://localhost:5005", {
       withCredentials: true,
     });
@@ -144,26 +101,32 @@ const Messages = ({ selectedConversation }) => {
     };
   }, [socket]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (message.trim() && selectedConversation && currentUserId) {
       const newMessage = {
-        _id: `msg_${Date.now()}`,
-        conversation: selectedConversation._id,
-        sender: {
-          _id: currentUserId,
-          name: JSON.parse(localStorage.getItem("user")).name
-        },
+        sender: currentUserId,
         content: message,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
       };
 
-      // Save to localStorage
-      const allMessages = JSON.parse(localStorage.getItem('messages') || '[]');
-      localStorage.setItem('messages', JSON.stringify([...allMessages, newMessage]));
-      
-      setMessages(prev => [...prev, newMessage]);
-      setMessage("");
+      try {
+        const response = await fetch(
+          `http://localhost:5005/conversations/${selectedConversation._id}/messages`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newMessage),
+          }
+        );
+        if (response.ok) {
+          const savedMessage = await response.json();
+          setMessages(prev => [...prev, savedMessage]);
+          setMessage("");
+        } else {
+          console.error('Failed to send message');
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     }
   };
 

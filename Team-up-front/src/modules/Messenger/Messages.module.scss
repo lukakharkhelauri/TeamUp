@@ -72,7 +72,7 @@
 
     .person-1 {
       align-self: flex-end;
-      background-color: #0084ff;
+      background-color: #ffffff;
       color: white;
       border-bottom-right-radius: 5px;
 
@@ -107,7 +107,7 @@
       transition: border-color 0.2s;
 
       &:focus {
-        border-color: #0084ff;
+        border-color: #333446;
       }
 
       &::placeholder {
@@ -117,7 +117,7 @@
 
     button {
       padding: 12px 25px;
-      background-color: #0084ff;
+      background-color: #333446;
       color: white;
       border: none;
       border-radius: 20px;
@@ -126,7 +126,7 @@
       transition: background-color 0.2s;
 
       &:hover {
-        background-color: #0073e6;
+        background-color: #7F8CAA;
       }
 
       &:active {
@@ -242,9 +242,9 @@
       padding: 4px 10px;
       border-radius: 20px;
       font-size: 1rem;
-      color: black;
+      color: rgb(255, 255, 255);
       font-weight: 500;
-      background-color: #e9d18f;
+      background-color: #333446;
 
       @media (max-width: 768px) {
         font-size: 0.9rem;
@@ -282,10 +282,9 @@
 
     button {
       padding: 8px 25px;
-      border: 1px solid #151515;
       border-radius: 15px;
       cursor: pointer;
-      background: #efd135;
+      background: #333446;
       font-weight: 500;
     }
 

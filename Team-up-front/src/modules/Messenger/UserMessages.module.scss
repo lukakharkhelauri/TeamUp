@@ -34,7 +34,7 @@
       display: block;
       width: 25px;
       height: 3px;
-      background-color: #bda21d;
+      background-color: #333446;
       transition: all 0.3s ease;
     }
 
@@ -97,8 +97,8 @@
     transition: border 0.3s ease-in-out;
 
     &:focus {
-      border-color: #efd135;
-      box-shadow: 0 0 10px #bda21d;
+      border-color: #333446;
+      box-shadow: 0 0 10px #333446;
     }
   }
 }
@@ -129,7 +129,7 @@
 
   @media (max-width: 768px) {
     padding: 0.5rem;
-    height: calc(100vh - 300px); // Adjust based on sidebar height
+    height: calc(100vh - 300px); 
   }
 }
 

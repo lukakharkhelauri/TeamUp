@@ -4,7 +4,6 @@ const Project = require('../models/project.model');
 
 const router = express.Router();
 
-// Get all projects
 router.get('/', async (req, res) => {
     try {
         const projects = await Project.find()
@@ -17,16 +16,12 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Create a new project
 router.post('/', async (req, res) => {
     try {
         const projectData = req.body;
-        
-        // Create the project without any role verification
         const newProject = new Project(projectData);
         await newProject.save();
         
-        // Populate the project before sending response
         const populatedProject = await Project.findById(newProject._id)
             .populate('clientId')
             .populate('developerId');
@@ -38,7 +33,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get project by ID
 router.get('/:id', async (req, res) => {
     try {
         const project = await Project.findById(req.params.id)
@@ -56,7 +50,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update project
 router.put('/:id', async (req, res) => {
     try {
         const updatedProject = await Project.findByIdAndUpdate(
@@ -78,7 +71,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Delete project
 router.delete('/:id', async (req, res) => {
     try {
         const deletedProject = await Project.findByIdAndDelete(req.params.id);
